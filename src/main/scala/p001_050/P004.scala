@@ -17,5 +17,9 @@ object P004 {
     s == s.reverse
   }
 
+  def nDigitNumbers(digit: Int): List[Long] =
+    if (digit <= 0) Nil
+    else List.range(BigInt(10).pow(digit - 1).toLong, BigInt(10).pow(digit).toLong)
+
   def solve(n: Int): Long = ???
 }
