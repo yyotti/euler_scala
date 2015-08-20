@@ -12,5 +12,10 @@ package project_euler
  * では, 3桁の数の積で表される回文数の最大値を求めよ.
  */
 object P004 {
+  def isPalindromeNumber(n: Long): Boolean = {
+    val s = n.toString
+    s == s.reverse
+  }
+
   def solve(n: Int): Long = ???
 }
