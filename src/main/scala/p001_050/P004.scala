@@ -21,5 +21,10 @@ object P004 {
     if (digit <= 0) Nil
     else List.range(BigInt(10).pow(digit - 1).toLong, BigInt(10).pow(digit).toLong)
 
-  def solve(n: Int): Long = ???
+  def solve(n: Int): Long = {
+    val nums = nDigitNumbers(n)
+    nums.flatMap { k1 =>
+      nums.takeWhile { _ <= k1 }.collect { case k2 if isPalindromeNumber(k1 * k2) => k1 * k2 }
+    }.max
+  }
 }
