@@ -16,5 +16,9 @@ package project_euler
  * 数列の項の値が400万以下の, 偶数値の項の総和を求めよ.
  */
 object P002 {
-  def solve(n: Int): Long = ???
+  def fib(a1: Int, a2: Int, max: Int): List[Int] =
+    if (a1 > max) Nil
+    else a1 :: fib(a2, a1 + a2, max)
+
+  def solve(n: Int): Long = fib(1, 2, n).takeWhile { _ <= n }.filter { _ % 2 == 0 }.sum
 }
