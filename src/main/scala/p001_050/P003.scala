@@ -14,12 +14,5 @@ package project_euler
 object P003 {
   import commons._
 
-  def primeFactors(n: Long): List[Long] =
-    if (n == 1) Nil
-    else primes.takeWhile { _ <= math.sqrt(n) }.find { n % _ == 0 } match {
-      case Some(k) => k :: primeFactors(n / k)
-      case _ => List(n)
-    }
-
   def solve(n: Long): Long = primeFactors(n).last
 }
