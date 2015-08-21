@@ -14,13 +14,6 @@ package project_euler
 object P005 {
   import commons._
 
-  def primeFactors(n: Long): List[Long] =
-    if (n == 1) Nil
-    else primes.takeWhile { _ <= math.sqrt(n) }.find { n % _ == 0 } match {
-      case Some(k) => k :: primeFactors(n / k)
-      case _ => List(n)
-    }
-
   def countNumbers(list: List[Long]) =
     list.groupBy { k => k }.map { case (k, ks) => (k, ks.size) }.toMap
 

@@ -4,36 +4,6 @@ import project_euler.P005
 import org.specs2.mutable._
 
 class P005Spec extends Specification {
-  "P005#primeFactors(Long)" should {
-    "returns [] if n = 1" in {
-      P005.primeFactors(1) must beEmpty
-    }
-
-    "returns [2] if n = 2" in {
-      P005.primeFactors(2) must beEqualTo(List(2))
-    }
-
-    "returns [3] if n = 3" in {
-      P005.primeFactors(3) must beEqualTo(List(3))
-    }
-
-    "returns [2] if n = 4" in {
-      P005.primeFactors(4) must beEqualTo(List(2, 2))
-    }
-
-    "returns [2, 3] if n = 6" in {
-      P005.primeFactors(6) must beEqualTo(List(2, 3))
-    }
-
-    "returns [2, 2, 3] if n = 12" in {
-      P005.primeFactors(12) must beEqualTo(List(2, 2, 3))
-    }
-
-    "returns [5, 7, 13, 29] if n = 13195" in {
-      P005.primeFactors(13195) must beEqualTo(List(5, 7, 13, 29))
-    }
-  }
-
   "P005#countNumbers(List[Long])" should {
     "returns [] if list = []" in {
       P005.countNumbers(Nil) must beEmpty
