@@ -10,4 +10,11 @@ package object commons {
     else primes.takeWhile { _ <= math.sqrt(n) }.forall { n % _ != 0 }
 
   val primes: Stream[Long] = 2L #:: from(3L, 2).filter { n => isPrime(n) }
+
+  def primeFactors(n: Long): List[Long] =
+    if (n == 1) Nil
+    else primes.takeWhile { _ <= math.sqrt(n) }.find { n % _ == 0 } match {
+      case Some(k) => k :: primeFactors(n / k)
+      case _ => List(n)
+    }
 }

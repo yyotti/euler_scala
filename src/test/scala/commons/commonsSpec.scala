@@ -63,4 +63,34 @@ class commonsSpec extends Specification {
       primes.take(10).toList must beEqualTo(List(2, 3, 5, 7, 11, 13, 17, 19, 23, 29))
     }
   }
+
+  "def primeFactors(n)" should {
+    "returns [] if n = 1" in {
+      primeFactors(1) must beEmpty
+    }
+
+    "returns [2] if n = 2" in {
+      primeFactors(2) must beEqualTo(List(2))
+    }
+
+    "returns [3] if n = 3" in {
+      primeFactors(3) must beEqualTo(List(3))
+    }
+
+    "returns [2] if n = 4" in {
+      primeFactors(4) must beEqualTo(List(2, 2))
+    }
+
+    "returns [2, 3] if n = 6" in {
+      primeFactors(6) must beEqualTo(List(2, 3))
+    }
+
+    "returns [2, 2, 3] if n = 12" in {
+      primeFactors(12) must beEqualTo(List(2, 2, 3))
+    }
+
+    "returns [5, 7, 13, 29] if n = 13195" in {
+      primeFactors(13195) must beEqualTo(List(5, 7, 13, 29))
+    }
+  }
 }
