@@ -4,12 +4,6 @@ import project_euler.P005
 import org.specs2.mutable._
 
 class P005Spec extends Specification {
-  "P005#primes" should {
-    "first 10 terms are [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]" in {
-      P005.primes.take(10).toList must beEqualTo(List(2, 3, 5, 7, 11, 13, 17, 19, 23, 29))
-    }
-  }
-
   "P005#primeFactors(Long)" should {
     "returns [] if n = 1" in {
       P005.primeFactors(1) must beEmpty

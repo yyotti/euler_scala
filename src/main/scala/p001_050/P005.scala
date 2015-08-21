@@ -12,9 +12,7 @@ package project_euler
  * では, 1 から 20 までの整数全てで割り切れる数字の中で最小の正の数はいくらになるか.
  */
 object P005 {
-  def nums(start: Long, step: Int): Stream[Long] = start #:: nums(start + step, step)
-
-  val primes: Stream[Long] = 2L #:: nums(3, 2).filter { n => primes.takeWhile { _ <= math.sqrt(n) }.forall { n % _ != 0 } }
+  import commons._
 
   def primeFactors(n: Long): List[Long] =
     if (n == 1) Nil
