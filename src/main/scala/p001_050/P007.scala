@@ -12,5 +12,7 @@ package project_euler
  * 10 001 番目の素数を求めよ.
  */
 object P007 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  def solve(n: Int): Long = primes(n - 1)
 }
