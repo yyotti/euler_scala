@@ -12,22 +12,13 @@ package project_euler
  * では, 1 から 20 までの整数全てで割り切れる数字の中で最小の正の数はいくらになるか.
  */
 object P005 {
-  import commons._
+  def gcd(m: Long, n: Long): Long =
+    if (m < n) gcd(n, m)
+    else if (n == 0) m
+    else gcd(n, m % n)
 
-  def countNumbers(list: List[Long]) =
-    list.groupBy { k => k }.map { case (k, ks) => (k, ks.size) }.toMap
-
-  def merge(map1: Map[Long, Int], map2: Map[Long, Int]) =
-    map2.foldLeft(map1) { case (map1, (k, c)) =>
-      map1 + (k -> c.max(map1.getOrElse(k, 0)))
-    }
+  def lcm(m: Long, n: Long): Long = m * n / gcd(m, n)
 
   def solve(n: Int): Long =
-    (1 until n).map { k =>
-      countNumbers(primeFactors(k))
-    }.reduceLeft { (map1, map2) =>
-      merge(map1, map2)
-    }.map { case (k, c) =>
-      BigInt(k).pow(c).toLong
-    }.product
+    (1 until n).foldLeft(1L) { (k, n) => lcm(k, n) }
 }
