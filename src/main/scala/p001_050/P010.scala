@@ -12,5 +12,8 @@ package project_euler
  * 200万以下の全ての素数の和を求めよ.
  */
 object P010 {
-  def solve(max: Long): Long = ???
+  import commons._
+
+  def solve(max: Long): Long =
+    primes.takeWhile { _ <= max }.sum
 }
