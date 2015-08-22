@@ -20,5 +20,16 @@ package project_euler
  * これらの積 abc を計算しなさい.
  */
 object P009 {
-  def solve: Long = ???
+  def isPytagoreanTriplet(a: Long, b: Long, c: Long) = a * a + b * b == c * c
+
+  def solve: Long =
+    (1L to 1000).flatMap { a =>
+      ((a + 1) to (1000 - a - 1) / 2).map { b =>
+        (a, b, 1000 - a - b)
+      }
+    }.withFilter {
+      case (a, b, c) => isPytagoreanTriplet(a, b, c)
+    }.map {
+      case (a, b, c) => a * b * c
+    }.headOption.getOrElse(0)
 }
