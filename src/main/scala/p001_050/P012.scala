@@ -42,5 +42,13 @@ package project_euler
  * では, 500個より多く約数をもつ最初の三角数はいくつか.
  */
 object P012 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  val triangleNumbers: Stream[Long] = 1 #:: from(2).zip(triangleNumbers).map { case (a, b) => a + b }
+
+  def factorsCount(n: Long) =
+    primeFactors(n).groupBy { k => k }.map { case (k, seq) => (k, seq.size + 1) }.values.product
+
+  def solve(n: Int): Long =
+    triangleNumbers.find { k => factorsCount(k) > n }.get
 }
