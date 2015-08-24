@@ -60,5 +60,12 @@ package project_euler
  * 注: ここではたかだか 16384 通りのルートしかないので, すべてのパターンを試すこともできる. Problem 67 は同じ問題だが100行あるので, 総当りでは解けない. もっと賢い方法が必要である.
  */
 object P018 {
-  def solve(arr: Array[Int]): Long = ???
+  def solve(lines: List[List[Int]]): Long =
+    lines.reverse.reduceLeft { (sums, line) =>
+      sums
+        .zip(sums.tail)
+        .map { case (a, b) => a.max(b) }
+        .zip(line)
+        .map { case (a, b) => a + b }
+    }.head
 }
