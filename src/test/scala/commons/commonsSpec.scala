@@ -93,4 +93,32 @@ class commonsSpec extends Specification {
       primeFactors(13195) must beEqualTo(List(5, 7, 13, 29))
     }
   }
+
+  "def fact(n)" should {
+    "returns 1 if n = 1" in {
+      fact(1) must beEqualTo(1)
+    }
+
+    "returns 2 if n = 2" in {
+      fact(2) must beEqualTo(2)
+    }
+
+    "returns 6 if n = 3" in {
+      fact(3) must beEqualTo(6)
+    }
+  }
+
+  "def digits(n)" should {
+    "returns [1] if n = 1" in {
+      digits(1) must beEqualTo(Seq(1))
+    }
+
+    "returns [1, 2] if n = 12" in {
+      digits(12) must beEqualTo(Seq(1, 2))
+    }
+
+    "returns [1, 2, 3] if n = 123" in {
+      digits(123) must beEqualTo(Seq(1, 2, 3))
+    }
+  }
 }

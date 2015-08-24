@@ -18,11 +18,7 @@ package project_euler
  * では, 100! の各桁の数字の和を求めよ.
  */
 object P020 {
-  def fact(n: BigInt): BigInt =
-    if (n == 1) 1
-    else n * fact(n - 1)
-
-  def digits(n: BigInt): Seq[Int] = n.toString.map { _.toString.toInt }
+  import commons._
 
   def solve(n: Int): Long = digits(fact(n)).sum
 }

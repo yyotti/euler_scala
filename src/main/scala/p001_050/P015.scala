@@ -12,9 +12,7 @@ package project_euler
  * では, 20×20 のマス目ではいくつのルートがあるか.
  */
 object P015 {
-  def fact(n: BigInt): BigInt =
-    if (n <= 1) 1
-    else n * fact(n - 1)
+  import commons._
 
   def combination(n: Int, r: Int): Long =
     if (n < r) 0

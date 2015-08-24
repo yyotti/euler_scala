@@ -17,4 +17,10 @@ package object commons {
       case Some(k) => k :: primeFactors(n / k)
       case _ => List(n)
     }
+
+  def fact(n: BigInt): BigInt =
+    if (n <= 1) 1
+    else n * fact(n - 1)
+
+  def digits(n: BigInt): Seq[Int] = n.toString.map { _.toString.toInt }
 }
