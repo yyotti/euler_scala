@@ -136,4 +136,23 @@ class commonsSpec extends Specification {
       fromFileToString(new java.io.File("src/test/resources/data1.txt")) must beEqualTo("abcdefghi")
     }
   }
+
+  "sumProperDivisors(n)" should {
+    "returns 0 if n = 1" in {
+      sumProperDivisors(1) must beEqualTo(0)
+    }
+
+    "returns 1 if n = 2" in {
+      sumProperDivisors(2) must beEqualTo(1)
+    }
+
+    "returns 3 if n = 4" in {
+      sumProperDivisors(4) must beEqualTo(3)
+    }
+
+    "returns 284 if n = 220" in {
+      sumProperDivisors(220) must beEqualTo(284)
+    }
+  }
+
 }

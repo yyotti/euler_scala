@@ -21,10 +21,7 @@ package project_euler
 object P021 {
   import commons._
 
-  def d(n: Long) =
-    primeFactors(n).groupBy { k => k }.map { case (k, list) => (0 to list.size).map { a => BigInt(k).pow(a) }.sum }.product.toLong - n
-
   def solve(n: Int): Long =
-    (2 until n).filter { k => val d1 = d(k); d1 != k && d(d1) == k }.sum
+    (2 until n).filter { k => val d1 = sumProperDivisors(k); d1 != k && sumProperDivisors(d1) == k }.sum
 
 }
