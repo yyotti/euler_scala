@@ -35,5 +35,16 @@ package project_euler
  * 注意: 数列の途中で100万以上になってもよい
  */
 object P014 {
-  def solve(n: Int): Long = ???
+
+  def collatsCount(start: Long): Int =
+    cache.getOrElseUpdate(start, start match {
+      case 1 => 1
+      case n if n % 2 == 0 => 1 + collatsCount(start / 2)
+      case n => 1 + collatsCount(3 * start + 1)
+    })
+
+  val cache = collection.mutable.Map[Long, Int]()
+
+  def solve(n: Int): Long =
+    (1 to n).map { k => (k, collatsCount(k)) }.maxBy { _._2 }._1
 }
