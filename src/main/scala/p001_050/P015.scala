@@ -12,5 +12,15 @@ package project_euler
  * では, 20×20 のマス目ではいくつのルートがあるか.
  */
 object P015 {
-  def solve(n: Int): Long = ???
+  def fact(n: BigInt): BigInt =
+    if (n <= 1) 1
+    else n * fact(n - 1)
+
+  def combination(n: Int, r: Int): Long =
+    if (n < r) 0
+    else if (r <= 0) 0
+    else (fact(n) / (fact(n - r) * fact(r))).toLong
+
+
+  def solve(n: Int): Long = combination(n * 2, n)
 }
