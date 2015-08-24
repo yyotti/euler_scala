@@ -18,5 +18,15 @@ package project_euler
  * ファイル中の全名前のスコアの合計を求めよ.
  */
 object P022 {
-  def solve: Long = ???
+  import commons._
+
+  def solve: Long =
+    fromFileToString(new java.io.File("src/main/resources/p022_names.txt"))
+      .split(",")
+      .map { s => s.trim.drop(1).init }
+      .sorted
+      .zipWithIndex
+      .map { case (s, idx) => (idx + 1) * s.map { c => c - 'A' + 1 }.sum }
+      .toList
+      .sum
 }
