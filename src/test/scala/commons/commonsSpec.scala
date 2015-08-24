@@ -121,4 +121,19 @@ class commonsSpec extends Specification {
       digits(123) must beEqualTo(Seq(1, 2, 3))
     }
   }
+
+  "def withSource(src)(body)" should {
+    """returns ["abc", "defghi"]""" in {
+      val src = io.Source.fromFile("src/test/resources/data1.txt")
+      withSource(src) { src =>
+        src.getLines.toList
+      } must beEqualTo(List("abc", "defghi"))
+    }
+  }
+
+  "def fromFileToString(file)" should {
+    """returns "abcdefghi"""" in {
+      fromFileToString(new java.io.File("src/test/resources/data1.txt")) must beEqualTo("abcdefghi")
+    }
+  }
 }

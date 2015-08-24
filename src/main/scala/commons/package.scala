@@ -1,6 +1,9 @@
 package project_euler
 
 package object commons {
+  import io.Source
+  import java.io.File
+
   def from(start: Long): Stream[Long] = from(start, 1)
 
   def from(start: Long, step: Long): Stream[Long] = start #:: from(start + step, step)
@@ -23,4 +26,16 @@ package object commons {
     else n * fact(n - 1)
 
   def digits(n: BigInt): Seq[Int] = n.toString.map { _.toString.toInt }
+
+  def withSource[R](src: Source)(body: Source => R): R =
+    try {
+      body(src)
+    } finally {
+      src.close
+    }
+
+  def fromFileToString(file: File): String =
+    withSource(Source.fromFile(file)) { src =>
+      src.getLines.mkString
+    }
 }
