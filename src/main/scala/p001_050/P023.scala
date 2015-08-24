@@ -20,5 +20,16 @@ package project_euler
  * 2つの過剰数の和で書き表せない正の整数の総和を求めよ.
  */
 object P023 {
-  def solve: Long = ???
+  import commons._
+
+  def isAbundant(n: Long) = sumProperDivisors(n) > n
+
+  val abundantNumbers = from(1).filter { isAbundant }
+
+  def solve(max: Long): Long = {
+    val nums = abundantNumbers.takeWhile { _ <= max }
+    (1L to max).filter { k =>
+      !nums.takeWhile { _ <= k / 2 }.exists { n => isAbundant(k - n) }
+    }.sum
+  }
 }
