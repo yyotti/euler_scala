@@ -12,5 +12,9 @@ package project_euler
  * 同様にして, 2^1000 の数字和を求めよ.
  */
 object P016 {
-  def solve(n: Int): Long = ???
+  def pow(n: Int) =
+    if (n <= 0) 1
+    else BigInt("1".padTo(n + 1, '0'), 2)
+
+  def solve(n: Int): Long = pow(n).toString.map { _.toString.toInt }.sum
 }
