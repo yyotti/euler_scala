@@ -26,5 +26,21 @@ package project_euler
  * 20世紀（1901年1月1日から2000年12月31日）中に月の初めが日曜日になるのは何回あるか?
  */
 object P019 {
-  def solve: Int = ???
+  def isLeapYear(year: Int) = year % 400 == 0 || year % 100 != 0 && year % 4 == 0
+
+  def dateCount(year: Int, month: Int) = (year, month) match {
+    case (y, 2) if isLeapYear(y) => 29
+    case (_, 2) => 28
+    case (_, m) if (List(4, 6, 9, 11).contains(m)) => 30
+    case _ => 31
+  }
+
+  def solve: Int =
+    (1901 to 2000).flatMap { y =>
+      (1 to 12).map { m =>
+        (y, m)
+      }
+    }.foldLeft(((1 to 12).map { m => dateCount(1900, m) }.sum, 0)) { case ((dc, count), (year, month)) =>
+      (dc + dateCount(year, month), count + (if ((dc + 1) % 7 == 0) 1 else 0))
+    }._2
 }
