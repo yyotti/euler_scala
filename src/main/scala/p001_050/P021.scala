@@ -19,5 +19,12 @@ package project_euler
  * それでは10000未満の友愛数の和を求めよ.
  */
 object P021 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  def d(n: Long) =
+    primeFactors(n).groupBy { k => k }.map { case (k, list) => (0 to list.size).map { a => BigInt(k).pow(a) }.sum }.product.toLong - n
+
+  def solve(n: Int): Long =
+    (2 until n).filter { k => val d1 = d(k); d1 != k && d(d1) == k }.sum
+
 }
