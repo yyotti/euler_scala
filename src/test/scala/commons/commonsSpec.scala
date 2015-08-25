@@ -155,4 +155,18 @@ class commonsSpec extends Specification {
     }
   }
 
+  "def digitCount(n)" should {
+    "returns 1 if n = 1" in {
+      digitCount(1) must beEqualTo(1)
+    }
+
+    "returns 2 if n = 12" in {
+      digitCount(12) must beEqualTo(2)
+    }
+
+    "returns 3 if n = 123" in {
+      digitCount(123) must beEqualTo(3)
+    }
+  }
+
 }

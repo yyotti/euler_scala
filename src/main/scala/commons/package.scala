@@ -41,4 +41,6 @@ package object commons {
 
   def sumProperDivisors(n: Long) =
     primeFactors(n).groupBy { k => k }.map { case (k, list) => (0 to list.size).map { a => BigInt(k).pow(a) }.sum }.product.toLong - n
+
+  def digitCount(n: BigInt): Int = digits(n).size
 }
