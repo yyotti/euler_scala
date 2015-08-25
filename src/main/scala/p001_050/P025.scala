@@ -48,5 +48,10 @@ package project_euler
  * 1000桁になる最初の項の番号を答えよ.
  */
 object P025 {
-  def solve(digit: Int): Long = ???
+  import commons._
+
+  val fib: Stream[BigInt] = BigInt(1) #:: BigInt(1) #:: fib.zip(fib.tail).map { case (a, b) => a + b }
+
+  def solve(digit: Int): Long =
+    fib.zipWithIndex.dropWhile { case (n, idx) => digitCount(n) < digit }.head._2 + 1
 }
