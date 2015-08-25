@@ -18,5 +18,9 @@ package project_euler
  * 0,1,2,3,4,5,6,7,8,9からなる順列を辞書式に並べたときの100万番目はいくつか?
  */
 object P024 {
-  def solve[T](list: List[T], n: Long): String = ???
+  def solve[T](list: List[T], n: Int): String = {
+    val it = list.permutations.drop(n - 1)
+    if (it.hasNext) it.next.mkString
+    else ""
+  }
 }
