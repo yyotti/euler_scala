@@ -27,9 +27,7 @@ object P023 {
   val abundantNumbers = from(1).filter { isAbundant }
 
   def solve(max: Long): Long = {
-    val nums = abundantNumbers.takeWhile { _ <= max }
-    (1L to max).filter { k =>
-      !nums.takeWhile { _ <= k / 2 }.exists { n => isAbundant(k - n) }
-    }.sum
+    val nums = abundantNumbers.takeWhile { _ <= max }.toList
+    nums.foldLeft((1L to max).toSet) { case (set, n1) => set -- nums.dropWhile { _ < n1 }.map { _ + n1 } }.sum
   }
 }
