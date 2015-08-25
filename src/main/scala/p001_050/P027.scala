@@ -34,5 +34,16 @@ package project_euler
  * n = 0 から始めて連続する整数で素数を生成したときに最長の長さとなる上の二次式の, 係数 a, b の積を答えよ.
  */
 object P027 {
-  def solve: Long = ???
+  import commons._
+
+  def func(a: Int, b: Int)(n: Long) = n * n + a * n + b
+
+  def solve: Long = (-999 to 999).flatMap { a =>
+    (-999 to 999).map { b =>
+      (a, b, a * b)
+    }
+  }.maxBy { case (a, b, ab) =>
+    val f = func(a, b)(_)
+    from(0).takeWhile { n => isPrime(f(n)) }.size
+  }._3
 }
