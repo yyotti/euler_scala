@@ -38,12 +38,26 @@ object P027 {
 
   def func(a: Int, b: Int)(n: Long) = n * n + a * n + b
 
-  def solve: Long = (-999 to 999).flatMap { a =>
-    (-999 to 999).map { b =>
-      (a, b, a * b)
-    }
-  }.maxBy { case (a, b, ab) =>
-    val f = func(a, b)(_)
-    from(0).takeWhile { n => isPrime(f(n)) }.size
-  }._3
+  /*
+   * f(n) = n^2 + an + b とする。
+   *
+   * n = 0で素数にならなければ意味がないので、 f(0) = b は素数でなければならない。
+   *
+   * また、f(n) = n(n + a) + b であるから、
+   *   n = b
+   * もしくは
+   *   n = b - a
+   * のどちらかで、必ず f(n) は素数ではなくなる。
+   *   a &ge; 0 の場合、 b &ge; b - a
+   *   a &lt; 0 の場合、 b &lt; b - a
+   * であるから、nの最大値をより大きくできる可能性があるのは a &lt; 0 の場合で
+   * ある。
+   */
+  def solve: Long =
+    (-999 to 0).flatMap { a =>
+        primes.takeWhile { _ < 1000}.map { b => (a, b.toInt, a * b) }
+    }.maxBy { case (a, b, ab) =>
+      val f = func(a, b)(_)
+      from(0).takeWhile { n => isPrime(f(n)) }.size
+    }._3
 }
