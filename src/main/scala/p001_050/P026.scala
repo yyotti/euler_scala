@@ -36,5 +36,15 @@ package project_euler
  * d &lt; 1000 なる 1/d の中で小数部の循環節が最も長くなるような d を求めよ.
  */
 object P026 {
-  def solve(max: Int): Int = ???
+
+  def recuringCycleLength(n: Int, d: Int): Int = {
+    def rc(n: Int, d: Int, count: Int, cache: Map[Int, Int]): Int =
+      if ((n * 10) % d == 0) 0
+      else if (cache.contains(n)) count - cache(n)
+      else rc((n * 10) % d, d, count + 1, cache + (n -> count))
+
+    rc(n, d, 1, Map.empty)
+  }
+
+  def solve(max: Int): Int = (1 until max).map { k => (k -> recuringCycleLength(1, k)) }.maxBy { _._2 }._1
 }
