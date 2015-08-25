@@ -11,9 +11,13 @@ class P027Spec extends Specification {
     }
   }
 
-  "P027#solve" should {
-    "returns -59231" in {
-      P027.solve must beEqualTo(-59231)
+  "P027#solve(Int)" should {
+    "returns -41 if max = 42" in {
+      P027.solve(42) must beEqualTo(-41)
+    }
+
+    "returns -59231 if max = 1000" in {
+      P027.solve(1000) must beEqualTo(-59231)
     }
   }
 }

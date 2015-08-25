@@ -53,9 +53,9 @@ object P027 {
    * であるから、nの最大値をより大きくできる可能性があるのは a &lt; 0 の場合で
    * ある。
    */
-  def solve: Long =
-    (-999 to 0).flatMap { a =>
-        primes.takeWhile { _ < 1000}.map { b => (a, b.toInt, a * b) }
+  def solve(max: Int): Long =
+    (-(max - 1) to 0).flatMap { a =>
+        primes.takeWhile { _ < max}.map { b => (a, b.toInt, a * b) }
     }.maxBy { case (a, b, ab) =>
       val f = func(a, b)(_)
       from(0).takeWhile { n => isPrime(f(n)) }.size
