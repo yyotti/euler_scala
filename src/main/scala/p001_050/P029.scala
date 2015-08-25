@@ -30,5 +30,10 @@ package project_euler
  * 2 ≤ a ≤ 100, 2 ≤ b ≤ 100 で同じことをしたときいくつの異なる項が存在するか?
  */
 object P029 {
-  def solve(n: Int): Long = ???
+  def solve(n: Int): Long =
+    (2 to n).flatMap { a =>
+      (2 to n).map { b =>
+        BigInt(a).pow(b)
+      }
+    }.toSet.size
 }
