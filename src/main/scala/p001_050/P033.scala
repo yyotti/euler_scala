@@ -38,8 +38,8 @@ object P033 {
         Fraction(x, y)
       }
     }.filter { frac =>
-      val (a :: b :: _) = splitDigits(frac.n)
-      val (c :: d :: _) = splitDigits(frac.d)
+      val (a +: b +: _) = digits(frac.n)
+      val (c +: d +: _) = digits(frac.d)
       !(b == 0 && d == 0) && (
         a == c && Fraction(b, d).lowestTerm == frac.lowestTerm ||
         a == d && Fraction(b, c).lowestTerm == frac.lowestTerm ||
@@ -52,5 +52,4 @@ object P033 {
       Fraction(f.n * frac.n, f.d * frac.d)
     }.lowestTerm.d
 
-  def splitDigits(n: Long): List[Int] = n.toString.map { _.toString.toInt }.toList
 }
