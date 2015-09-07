@@ -23,7 +23,34 @@ package project_euler
  * その4個の分数の積が約分された形で与えられたとき, 分母の値を答えよ.
  */
 object P033 {
-  def solve: Long = ???
+  import commons._
 
-  def splitDigits(n: Int): List[Int] = n.toString.map { _.toString.toInt }.toList
+  case class Fraction(n: Long, d: Long) {
+    lazy val lowestTerm = {
+      val k = gcd(n, d)
+      Fraction(n / k, d / k)
+    }
+  }
+
+  def solve: Long =
+    (10 to 98).flatMap { x =>
+      (x + 1 to 99).map { y =>
+        Fraction(x, y)
+      }
+    }.filter { frac =>
+      val (a :: b :: _) = splitDigits(frac.n)
+      val (c :: d :: _) = splitDigits(frac.d)
+      !(b == 0 && d == 0) && (
+        a == c && Fraction(b, d).lowestTerm == frac.lowestTerm ||
+        a == d && Fraction(b, c).lowestTerm == frac.lowestTerm ||
+        b == c && Fraction(a, d).lowestTerm == frac.lowestTerm ||
+        b == d && Fraction(a, c).lowestTerm == frac.lowestTerm
+      )
+    }.map {
+      _.lowestTerm
+    }.foldLeft(Fraction(1, 1)) { case (f, frac) =>
+      Fraction(f.n * frac.n, f.d * frac.d)
+    }.lowestTerm.d
+
+  def splitDigits(n: Long): List[Int] = n.toString.map { _.toString.toInt }.toList
 }
