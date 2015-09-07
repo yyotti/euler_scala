@@ -169,4 +169,26 @@ class commonsSpec extends Specification {
     }
   }
 
+  "def gcd(m, n)" should {
+    "returns 1 if (m, n) = (2, 1)" in {
+      gcd(2, 1) must beEqualTo(1)
+    }
+
+    "returns 1 if (m, n) = (3, 2)" in {
+      gcd(3, 2) must beEqualTo(1)
+    }
+
+    "returns 2 if (m, n) = (4, 2)" in {
+      gcd(4, 2) must beEqualTo(2)
+    }
+
+    "returns 5 if (m, n) = (15, 10)" in {
+      gcd(15, 10) must beEqualTo(5)
+    }
+
+    "returns 3 if (m, n) = (6, 9)" in {
+      gcd(6, 9) must beEqualTo(3)
+    }
+  }
+
 }

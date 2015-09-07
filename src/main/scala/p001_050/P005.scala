@@ -12,10 +12,7 @@ package project_euler
  * では, 1 から 20 までの整数全てで割り切れる数字の中で最小の正の数はいくらになるか.
  */
 object P005 {
-  def gcd(m: Long, n: Long): Long =
-    if (m < n) gcd(n, m)
-    else if (n == 0) m
-    else gcd(n, m % n)
+  import commons._
 
   def lcm(m: Long, n: Long): Long = m * n / gcd(m, n)
 
