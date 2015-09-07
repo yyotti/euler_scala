@@ -191,4 +191,38 @@ class commonsSpec extends Specification {
     }
   }
 
+  "isPalindromeNumber(BigInt)" should {
+    "returns true if n = 1" in {
+      isPalindromeNumber(1) must beTrue
+    }
+
+    "returns true if n = 2" in {
+      isPalindromeNumber(2) must beTrue
+    }
+
+    "returns false if n = 10" in {
+      isPalindromeNumber(10) must beFalse
+    }
+
+    "returns true if n = 11" in {
+      isPalindromeNumber(11) must beTrue
+    }
+
+    "returns false if n = 2000" in {
+      isPalindromeNumber(2000) must beFalse
+    }
+
+    "returns true if n = 2002" in {
+      isPalindromeNumber(2002) must beTrue
+    }
+
+    "returns false if n = 30010" in {
+      isPalindromeNumber(30010) must beFalse
+    }
+
+    "returns true if n = 30103" in {
+      isPalindromeNumber(30103) must beTrue
+    }
+  }
+
 }

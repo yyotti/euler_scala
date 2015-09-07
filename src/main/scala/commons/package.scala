@@ -48,4 +48,10 @@ package object commons {
     if (m < n) gcd(n, m)
     else if (n == 0) m
     else gcd(n, m % n)
+
+  def isPalindromeNumber(n: BigInt): Boolean = {
+    val s = n.toString
+    s == s.reverse
+  }
+
 }
