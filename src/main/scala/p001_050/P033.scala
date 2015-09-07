@@ -24,4 +24,6 @@ package project_euler
  */
 object P033 {
   def solve: Long = ???
+
+  def splitDigits(n: Int): List[Int] = n.toString.map { _.toString.toInt }.toList
 }
