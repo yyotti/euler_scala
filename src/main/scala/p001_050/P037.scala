@@ -20,5 +20,18 @@ package project_euler
  * 注: 2, 3, 5, 7を切り詰め可能な素数とは考えない.
  */
 object P037 {
-  def solve: Long = ???
+  import commons._
+
+  def solve: Long = {
+    val basePrimes = primes.takeWhile { _ < 10 }
+    createTruncatablePrimes(basePrimes, basePrimes).sum
+  }
+
+  def createTruncatablePrimes(lps: Seq[Long], rps: Seq[Long]): Seq[Long] = {
+    val nextLps = lps.flatMap { p => (1 to 9).map { n => (n.toString + p).toLong } }.filter { n => isPrime(n) }
+    val nextRps = rps.flatMap { p => (1 to 9).map { p * 10 + _ } }.filter { n => isPrime(n) }
+
+    if (nextLps.isEmpty || nextRps.isEmpty) Seq.empty
+    else nextLps.intersect(nextRps) ++ createTruncatablePrimes(nextLps, nextRps)
+  }
 }
