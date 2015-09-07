@@ -22,5 +22,14 @@ package project_euler
  * これらの硬貨を使って£2を作る方法は何通りあるか?
  */
 object P031 {
-  def solve(n: Int): Long = ???
+  def solve(n: Int): Long =
+    if (n < 0) throw new IllegalArgumentException
+    else solve(n, List(200, 100, 50, 20, 10, 5, 2, 1))
+
+  def solve(n: Int, coins: List[Int]): Long = (n, coins) match {
+    case (0, _) => 1
+    case (_, Nil) => 0
+    case (_, x :: xs) if (x > n) => solve(n, xs)
+    case (_, x :: xs) => solve(n - x, x :: xs) + solve(n, xs)
+  }
 }
