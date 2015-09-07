@@ -5,8 +5,8 @@ import org.specs2.mutable._
 
 class P036Spec extends Specification {
   "P036#solve(Int)" should {
-    "returns 57 if n = 20" in {
-      P036.solve(20) must beEqualTo(57)
+    "returns 25 if n = 20" in {
+      P036.solve(20) must beEqualTo(25)
     }
 
     "returns 872187 if n = 1000000" in {

@@ -16,5 +16,13 @@ package project_euler
  * (注: 先頭に0を含めて回文にすることは許されない.)
  */
 object P036 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  /**
+   * 先頭に0を含めて回文にしてはいけないので、先頭は必ず1である。(0[10]を除く)
+   * それが回文数である場合、最下桁も必ず1になるので、奇数について調べればよい。
+   * また、0は回文数であるが総和には影響を与えないので、無視してよい。
+   */
+  def solve(n: Int): Long =
+    (1 to n by 2).filter { n => isPalindromeNumber(n) && isPalindromeNumber(BigInt(BigInt(n).toString(2))) }.sum
 }
