@@ -22,5 +22,37 @@ package project_euler
  * HINT: いくつかの積は, 1通り以上の掛けられる数/掛ける数/積の組み合わせを持つが1回だけ数え上げよ.
  */
 object P032 {
-  def solve: Long = ???
+  /**
+   * 掛けられる数、掛ける数、積の桁数をそれぞれ d1, d2, d3 とすると、
+   *   d1 + d2 + d3 = 9 (d1 <= d2 <= d3)
+   * でなければならない。
+   * よって、考えられる組み合わせは
+   * (d1, d2, d3) = (1, 1, 7), (1, 2, 6), (1, 3, 5), (1, 4, 4),
+   *                (2, 2, 5), (2, 3, 4), (3, 3, 3)
+   *
+   * また掛け算の性質上、
+   *   d3 - 1 <= d1 + d2 <= d3
+   * となるはずなので、上記の組み合わせのうち
+   * (d1, d2, d3) = (1, 4, 4), (2, 2, 5), (2, 3, 4)
+   * 以上が対象となる組み合わせである。
+   */
+  def solve: Long =
+    List((1, 4, 4), (2, 2, 5), (2, 3, 4)).flatMap {
+      case (d1, d2, d3) =>
+        val min1 = math.pow(10, d1 - 1).toLong
+        val max1 = math.pow(10, d1).toLong - 1
+        (min1 to max1).flatMap { a =>
+          val min2 = math.pow(10, d2 - 1).toLong
+          val max2 = math.pow(10, d2).toLong - 1
+          (min2 to max2).map { b =>
+            (a, b, a * b)
+          }
+        }.withFilter {
+          case (a, b, c) => isPandigital(a, b, c)
+        }.map {
+          _._3
+        }.toSet
+    }.sum
+
+  def isPandigital(a: Long, b: Long, c: Long) = (a.toString + b + c).sorted == "123456789"
 }
