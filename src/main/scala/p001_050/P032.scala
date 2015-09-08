@@ -22,6 +22,8 @@ package project_euler
  * HINT: いくつかの積は, 1通り以上の掛けられる数/掛ける数/積の組み合わせを持つが1回だけ数え上げよ.
  */
 object P032 {
+  import commons._
+
   /**
    * 掛けられる数、掛ける数、積の桁数をそれぞれ d1, d2, d3 とすると、
    *   d1 + d2 + d3 = 9 (d1 <= d2 <= d3)
@@ -48,11 +50,9 @@ object P032 {
             (a, b, a * b)
           }
         }.withFilter {
-          case (a, b, c) => isPandigital(a, b, c)
+          case (a, b, c) => isPandigitalNumber((a.toString + b + c).toLong)
         }.map {
           _._3
         }.toSet
     }.sum
-
-  def isPandigital(a: Long, b: Long, c: Long) = (a.toString + b + c).sorted == "123456789"
 }

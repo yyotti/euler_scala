@@ -54,4 +54,5 @@ package object commons {
     s == s.reverse
   }
 
+  def isPandigitalNumber(n: Long) = n.toString.sorted == "123456789"
 }

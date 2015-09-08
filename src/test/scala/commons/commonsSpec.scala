@@ -225,4 +225,30 @@ class commonsSpec extends Specification {
     }
   }
 
+  "isPandigitalNumber(Long)" should {
+    "returns false if n = 1" in {
+      isPandigitalNumber(1) must beFalse
+    }
+
+    "returns false if n = 9" in {
+      isPandigitalNumber(9) must beFalse
+    }
+
+    "returns true if n = 123456789" in {
+      isPandigitalNumber(123456789L) must beTrue
+    }
+
+    "returns true if n = 987654321" in {
+      isPandigitalNumber(987654321L) must beTrue
+    }
+
+    "returns true if n = 918273645" in {
+      isPandigitalNumber(918273645) must beTrue
+    }
+
+    "returns false if n = 998765432" in {
+      isPandigitalNumber(998765432) must beFalse
+    }
+  }
+
 }
