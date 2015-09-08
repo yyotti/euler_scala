@@ -28,5 +28,27 @@ package project_euler
  * 整数と (1,2,...,n) (n > 1) との連結積として得られる9桁のパンデジタル数の中で最大のものはいくつか?
  */
 object P038 {
-  def solve: Long = ???
+  import commons._
+
+  /**
+   * かける数は(1, 2, ..., n)でn > 1なので、少なくともn = 2までは計算される。
+   *
+   * d 桁の整数に 1 桁の数字をかけ合わせると、d桁もしくは(d + 1)桁となる。
+   * かけられる数をi、その桁数をdとすると、
+   * d = 5 の場合は
+   *   i × 1 → 5桁
+   *   i × 2 → 5桁 or 6桁
+   * となり、連結積が必ず9桁を超える。
+   *
+   * d = 4 の場合は
+   *   i × 1 → 4桁
+   *   i × 2 → 4桁 or 5桁
+   * となるので、d <= 4の範囲で調べれば良い。
+   */
+  def solve: Long = Stream.from(1).takeWhile { _ < 10000 }.map { i =>
+    Stream.from(2).map { k =>
+      Stream.from(1).takeWhile { _ <= k }.map { _ * i }.mkString
+    }.dropWhile { _.length < 9 }.head
+  }.withFilter { s => s.length == 9 && isPandigitalNumber(s.toLong) }.map { _.toLong }.max
+
 }
