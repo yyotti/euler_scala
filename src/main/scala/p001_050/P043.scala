@@ -33,5 +33,17 @@ package project_euler
  * このような性質をもつ0から9のパンデジタル数の総和を求めよ.
  */
 object P043 {
-  def solve: Long = ???
+  import commons._
+
+  def solve: Long =
+    (0 to 9).permutations
+      .filter { ls =>
+        ls.head != 0 &&
+        Stream.from(1).take(7)
+          .map { n => ls.drop(n).take(3) }
+          .zip(primes)
+          .forall { case (nums, p) => nums.mkString.toInt % p == 0 }
+      }
+      .map { _.mkString.toLong }
+      .sum
 }
