@@ -27,7 +27,19 @@ object P044 {
 
   val pentagonalNumbers: Stream[Long] = 1 #:: pentagonalNumbers.zip(from(1, 3).tail).map { case (a, b) => a + b }
 
-  def isPentagonalNumber(n: Long) = pentagonalNumbers.dropWhile { _ < n }.head == n
+  /*
+   * nが五角数に含まれているか検索してもいいが、それだとかなり遅い。
+   *
+   *   P(n) = n(3n - 1)/2
+   * より、
+   *   3n^2 - n - 2P(n) = 0
+   *   n = (1 + √(1 + 24P(n)))/6
+   * である。右辺の計算結果が整数になれば五角数と判定できる。
+   */
+  def isPentagonalNumber(n: Long) = {
+    val t = (1 + math.sqrt(1 + 24 * n)) / 6;
+    t == t.toLong
+  }
 
   def solve: Long =
     Stream.from(1)
