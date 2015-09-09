@@ -23,5 +23,19 @@ package project_euler
  * 五角数のペア Pj と Pk について, 差と和が五角数になるものを考える. 差を D = |Pk - Pj| と書く. 差 D の最小値を求めよ.
  */
 object P044 {
-  def solve: Long = ???
+  import commons._
+
+  val pentagonalNumbers: Stream[Long] = 1 #:: pentagonalNumbers.zip(from(1, 3).tail).map { case (a, b) => a + b }
+
+  def isPentagonalNumber(n: Long) = pentagonalNumbers.dropWhile { _ < n }.head == n
+
+  def solve: Long =
+    Stream.from(1)
+      .map { n =>
+        val (h :: ts) = pentagonalNumbers.take(n).reverse.toList
+        ts.withFilter { v => isPentagonalNumber(h + v) && isPentagonalNumber(h - v) }.map { v => h - v }
+      }
+      .find { ls => !ls.isEmpty }
+      .get.min
+
 }
