@@ -24,5 +24,22 @@ package project_euler
  * 次の三角数かつ五角数かつ六角数な数を求めよ.
  */
 object P045 {
-  def solve: Long = ???
+  import commons._
+
+  def isTriangleNumber(n: Long) = {
+    val t = (-1 + math.sqrt(1 + 8 * n)) / 2
+    t == t.toLong
+  }
+
+  def isPentagonalNumber(n: Long) = {
+    val t = (1 + math.sqrt(1 + 24 * n)) / 6;
+    t == t.toLong
+  }
+
+  val hexagonalNumbers: Stream[Long] = 1L #:: hexagonalNumbers.zip(from(1, 4).tail).map { case (a, b) => a + b }
+
+  def solve: Long =
+    hexagonalNumbers.drop(143)
+      .find { h => isTriangleNumber(h) && isPentagonalNumber(h) }
+      .get
 }
