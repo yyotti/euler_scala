@@ -24,5 +24,15 @@ package project_euler
  * 16Kのテキストファイル words.txt 中に約2000語の英単語が記されている. 三角語はいくつあるか?
  */
 object P042 {
-  def solve: Long = ???
+  import commons._
+
+  // インデックスを1からにしたいので、便宜上初項を0とする
+  val triangleNumbers: Stream[Int] = Stream.from(1).scanLeft(0) { (s, i) => s + i }
+
+  def solve: Long =
+    fromFileToString(new java.io.File("src/main/resources/p042_words.txt"))
+      .split(",")
+      .map { s => s.trim.drop(1).init.map { _ - 'A' + 1 }.sum }
+      .filter { v => triangleNumbers.dropWhile { _ < v }.head == v }
+      .size
 }
