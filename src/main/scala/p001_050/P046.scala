@@ -30,5 +30,15 @@ package project_euler
  * 平方数の2倍と素数の和で表せない最小の奇合成数はいくつか?
  */
 object P046 {
-  def solve: Long = ???
+  import commons._
+
+  val squares = Stream.from(1).map { n => n * n }
+
+  def solve: Long =
+    from(3, 2)
+      .filter { n =>
+        !isPrime(n) &&
+        !squares.takeWhile { _ < n / 2 }.exists { s => isPrime(n - 2 * s) }
+      }.head
+
 }
