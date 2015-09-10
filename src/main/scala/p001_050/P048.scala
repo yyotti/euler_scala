@@ -12,5 +12,6 @@ package project_euler
  * では, 1^1 + 2^2 + 3^3 + ... + 1000^1000 の最後の10桁を求めよ.
  */
 object P048 {
-  def solve(n: Int): Long = ???
+  def solve(n: Int): Long =
+    (Stream.from(1).take(n).map { k => BigInt(k).pow(k) }.sum % 10000000000L).toLong
 }
