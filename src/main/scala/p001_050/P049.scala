@@ -21,5 +21,18 @@ package project_euler
  * それではこの数列の3つの項を連結した12桁の数を求めよ.
  */
 object P049 {
-  def solve: Long = ???
+  import commons._
+
+  def solve: Long =
+    from(1000)
+      .takeWhile { _ < 10000 - 3330 * 2 }
+      .map { n => List(n, n + 3330, n + 2 * 3330) }
+      .find { ls =>
+        ls.forall { n => isPrime(n) } &&
+        ls.map { _.toString.toSet }.distinct.size == 1 &&
+        ls != List(1487, 4817, 8147)
+      }
+      .get
+      .mkString
+      .toLong
 }
