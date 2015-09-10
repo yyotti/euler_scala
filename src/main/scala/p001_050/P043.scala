@@ -39,8 +39,8 @@ object P043 {
     (0 to 9).permutations
       .filter { ls =>
         ls.head != 0 &&
-        Stream.from(1).take(7)
-          .map { n => ls.drop(n).take(3) }
+        ls.tail
+          .sliding(3).toStream
           .zip(primes)
           .forall { case (nums, p) => nums.mkString.toInt % p == 0 }
       }
