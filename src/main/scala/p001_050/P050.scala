@@ -23,5 +23,21 @@ package project_euler
  * 100万未満の素数を連続する素数の和で表したときに最長になるのはどの素数か?
  */
 object P050 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  def findMaxPrime(ps: Stream[Long], p: Long, max: Int, n: Int): (Long, Int) =
+    if (ps.isEmpty) (p, max)
+    else {
+      val (maxP, m) =
+        ps
+          .scanLeft((0L, 0)) { case ((s, c), q) => (s + q, c + 1) }
+          .takeWhile { _._1 < n }
+          .filter { case (s, c) => c > max && isPrime(s) } match {
+            case Stream.Empty => (p, max)
+            case ls => ls.maxBy { _._2 }
+          }
+      findMaxPrime(ps.tail, maxP, m, n)
+    }
+
+  def solve(n: Int): Long = findMaxPrime(primes.takeWhile { _ < n }, 0, 0, n)._1
 }
