@@ -28,5 +28,17 @@ package project_euler
  * 1 ≤ n ≤ 100 について, 100万を超える nCr は何通りあるか?
  */
 object P053 {
-  def solve: Long = ???
+  import commons._
+
+  def combination(n: BigInt, r: BigInt): BigInt = fact(n) / (fact(r) * fact(n - r))
+
+  /**
+   * n = 23 までは100万を超えないらしいので、 23 <= n <= 100 で調べればよい。
+   * また、r = 1 もしくは r = n のときは nC1 = nCn = 1 となるので、2 <= r <= (n - 1) で調べる。
+   */
+  def solve: Long =
+    (23 to 100).flatMap { n =>
+      (2 to (n - 1)).map { r => combination(n, r) }.filter { _ >= 1000000 }
+    }
+    .size
 }
