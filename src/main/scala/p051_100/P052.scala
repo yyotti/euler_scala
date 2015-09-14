@@ -12,5 +12,12 @@ package project_euler
  * 2x, 3x, 4x, 5x, 6x が x と同じ数を含むような最小の正整数 x を求めよ.
  */
 object P052 {
-  def solve: Long = ???
+  import commons._
+
+  def solve: Long =
+    from(1)
+      .find { n =>
+        (2 to 6).map { k => (k * n).toString.sorted }.forall { k => n.toString.sorted == k }
+      }
+      .get
 }
