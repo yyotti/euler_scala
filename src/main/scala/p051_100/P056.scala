@@ -16,5 +16,10 @@ package project_euler
  * a, b < 100 について自然数 ab を考える. 数字和の最大値を答えよ.
  */
 object P056 {
-  def solve: Long = ???
+  import commons._
+
+  def solve: Long =
+    (1 until 100)
+      .flatMap { a => (1 until 100).map { b => digits(BigInt(a).pow(b)).sum }}
+      .max
 }
