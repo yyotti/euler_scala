@@ -55,4 +55,6 @@ package object commons {
   }
 
   def isPandigitalNumber(n: Long) = n.toString.sorted == "123456789"
+
+  def lcm(m: Long, n: Long): Long = m * n / gcd(m, n)
 }

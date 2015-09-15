@@ -251,4 +251,26 @@ class commonsSpec extends Specification {
     }
   }
 
+  "lcm(Int, Int)" should {
+    "returns 2 if (m, n) = (2, 1)" in {
+      lcm(2, 1) must beEqualTo(2)
+    }
+
+    "returns 6 if (m, n) = (3, 2)" in {
+      lcm(3, 2) must beEqualTo(6)
+    }
+
+    "returns 4 if (m, n) = (4, 2)" in {
+      lcm(4, 2) must beEqualTo(4)
+    }
+
+    "returns 30 if (m, n) = (15, 10)" in {
+      lcm(15, 10) must beEqualTo(30)
+    }
+
+    "returns 18 if (m, n) = (6, 9)" in {
+      lcm(6, 9) must beEqualTo(18)
+    }
+  }
+
 }

@@ -14,8 +14,6 @@ package project_euler
 object P005 {
   import commons._
 
-  def lcm(m: Long, n: Long): Long = m * n / gcd(m, n)
-
   def solve(n: Int): Long =
     (1 until n).foldLeft(1L) { (k, n) => lcm(k, n) }
 }
