@@ -87,5 +87,107 @@ package project_euler
  * 1000回中プレイヤー1が勝つのは何回か? (訳注 : この問題に置いてA 2 3 4 5というストレートは考えなくてもよい)
  */
 object P054 {
-  def solve: Long = ???
+  import commons._
+
+  case class Card(suit: Int, number: Int) extends Ordered[Card] {
+    def compare(that: Card): Int = if (number == that.number) suit - that.suit else number - that.number
+  }
+  object Card {
+    import math.Ordered._
+
+    def apply(value: String): Card = {
+      val number = value(0) match {
+        case 'T' => 10
+        case 'J' => 11
+        case 'Q' => 12
+        case 'K' => 13
+        case 'A' => 14
+        case c => c.asDigit
+      }
+      val suit = value(1) match {
+        case 'D' => 0
+        case 'C' => 1
+        case 'H' => 2
+        case 'S' => 3
+      }
+
+      Card(suit, number)
+    }
+  }
+
+  case class Hand(c1: Card, c2: Card, c3: Card, c4: Card, c5: Card) extends Ordered[Hand] {
+    import math.Ordered._
+
+    val cards = List(c1, c2, c3, c4, c5).sorted
+
+    val rank =
+      if (cards.tail.forall { _.suit == cards.head.suit }) {
+        // フラッシュ系
+        if (cards.map { _.number }.sliding(2).forall { ls => ls(0) + 1 == ls(1) }) {
+          // ストレートフラッシュ系
+          if (cards.head.number == 10) Hand.RoyalFlush
+          else Hand.StraightFlush
+        } else {
+          // フラッシュ
+          Hand.Flush
+        }
+      } else {
+        val groups = cards.groupBy { _.number }
+        if (groups.size == 5) {
+          // ストレート系
+          if (cards.map { _.number }.sliding(2).forall { ls => ls(0) + 1 == ls(1) }) Hand.Straight
+          else Hand.HighCard
+        } else if (groups.size == 2) {
+          // フォーカード or フルハウス
+          if (groups.exists { case (_, ls) => ls.size == 4 }) Hand.FourOfAKind
+          else Hand.FullHouse
+        } else if (groups.size == 3) {
+          // ツーペア or スリーカード
+          if (groups.exists { case (_, ls) => ls.size == 3 }) Hand.ThreeOfAKind
+          else Hand.TwoPairs
+        } else {
+          // ワンペア
+          Hand.OnePair
+        }
+      }
+
+    val rankedCards = rank match {
+      case Hand.HighCard | Hand.Straight | Hand.Flush | Hand.StraightFlush | Hand.RoyalFlush => // 全てのカードの数字が異なる
+        cards.reverse
+      case Hand.FullHouse | Hand.FourOfAKind => // 枚数が多いカードの大小で決められる
+        cards.groupBy { _.number }.toList.sortBy { case (_, ls) => ls.size }.reverse.map { case (_, ls) => ls.sorted.reverse }.flatten
+      case _ =>
+        val (ls1, ls2) = cards.groupBy { _.number }.toList.partition { case (_, ls) => ls.size > 1 }
+        ls1.flatMap { _._2 }.sorted.reverse ::: ls2.flatMap { _._2 }.sorted.reverse
+    }
+
+    def compare(that: Hand) =
+      if (rank != that.rank) rank - that.rank
+      else rankedCards.zip(that.rankedCards).dropWhile { case (c1, c2) => c1.number == c2.number } match {
+        case Nil => 0
+        case (c1, c2) :: _ => c1.number - c2.number
+      }
+  }
+  object Hand {
+    def apply(values: String): Hand = {
+      val cards = values.split(" ").map { v => Card(v) }
+      Hand(cards(0), cards(1), cards(2), cards(3), cards(4))
+    }
+
+    val HighCard = 0
+    val OnePair = 1
+    val TwoPairs = 2
+    val ThreeOfAKind = 3
+    val Straight = 4
+    val Flush = 5
+    val FullHouse = 6
+    val FourOfAKind = 7
+    val StraightFlush = 8
+    val RoyalFlush = 9
+  }
+
+  def solve: Long =
+    withSource(io.Source.fromFile("src/main/resources/p054_poker.txt")) { src => src.getLines.toList }
+      .map { s => val cs = s.split(" ").map { Card(_) }; (Hand(cs(0), cs(1), cs(2), cs(3), cs(4)), Hand(cs(5), cs(6), cs(7), cs(8), cs(9))) }
+      .count { case (h1, h2) => h1 > h2 }
 }
