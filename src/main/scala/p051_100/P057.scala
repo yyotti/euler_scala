@@ -35,5 +35,42 @@ package project_euler
  * 最初の1000項を考えたとき, 分子の桁数が分母の桁数を超える項はいくつあるか?
  */
 object P057 {
-  def solve(n: Int): Long = ???
+  import commons._
+  import scala.language.implicitConversions
+
+  implicit def Int2Fraction(i: Int) = Fraction(i, 1)
+  implicit def BigInt2Fraction(i: BigInt) = Fraction(i, 1)
+
+  case class Fraction(n: BigInt, d: BigInt) {
+    lazy val lowestTerm = {
+      val k = gcd(n, d)
+      Fraction(n / k, d / k)
+    }
+
+    def +(that: Fraction): Fraction = {
+      val k = lcm(d, that.d)
+      val m = n * k / d + that.n * k / that.d
+
+      Fraction(m, k).lowestTerm
+    }
+
+    def *(that: Fraction): Fraction = {
+      Fraction(n * that.n, d * that.d).lowestTerm
+    }
+
+    def ~ : Fraction = Fraction(d, n)
+  }
+  object Fraction {
+    def apply(n: Fraction, f: Fraction): Fraction = n * f.~
+  }
+
+  def frac(n: Int): Fraction = n match {
+    case 1 => Fraction(1, 2)
+    case _ => Fraction(1, 2 + frac(n - 1))
+  }
+
+  def solve(n: Int): Long =
+    (1 to n)
+      .map { n => 1 + frac(n) }
+      .count { case Fraction(n, d) => digitCount(n) > digitCount(d) }
 }
