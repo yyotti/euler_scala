@@ -27,7 +27,7 @@ object P033 {
 
   case class Fraction(n: Long, d: Long) {
     lazy val lowestTerm = {
-      val k = gcd(n, d)
+      val k = gcd(n, d).toLong
       Fraction(n / k, d / k)
     }
   }

@@ -15,5 +15,5 @@ object P005 {
   import commons._
 
   def solve(n: Int): Long =
-    (1 until n).foldLeft(1L) { (k, n) => lcm(k, n) }
+    (1 until n).foldLeft(1L) { (k, n) => lcm(k, n).toLong }
 }

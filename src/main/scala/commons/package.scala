@@ -44,7 +44,7 @@ package object commons {
 
   def digitCount(n: BigInt): Int = digits(n).size
 
-  def gcd(m: Long, n: Long): Long =
+  def gcd(m: BigInt, n: BigInt): BigInt =
     if (m < n) gcd(n, m)
     else if (n == 0) m
     else gcd(n, m % n)
@@ -56,5 +56,5 @@ package object commons {
 
   def isPandigitalNumber(n: Long) = n.toString.sorted == "123456789"
 
-  def lcm(m: Long, n: Long): Long = m * n / gcd(m, n)
+  def lcm(m: BigInt, n: BigInt): BigInt = m * n / gcd(m, n)
 }
