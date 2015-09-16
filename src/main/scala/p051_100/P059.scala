@@ -40,5 +40,61 @@ package project_euler
  * また, 平文はよく用いられる英単語を含んでいる. この暗号文を復号し, 平文のASCIIでの値の和を求めよ.
  */
 object P059 {
-  def solve: Long = ???
+  import commons._
+
+  def findPassword(str: String, passwordLength: Int): String =
+    new String(
+      str
+        .split(",")
+        .map { _.toByte }
+        .grouped(passwordLength)
+        .filter { _.size == passwordLength }
+        .toArray
+        .transpose
+        .map { ls => (ls.groupBy { b => b }.map { case (b, ls) => (b, ls.size) }.maxBy { _._2 }._1 ^ ' ').toByte }
+    )
+
+  def decrypt(str: String, pw: String): String =
+    new String(
+      str
+        .split(",")
+        .map { _.toByte }
+        .grouped(pw.length)
+        .flatMap { ls => ls.zip(pw).map { case (n, p) => (n ^ p).toByte } }
+        .toArray
+    )
+
+  /**
+   * まず3文字のパスワードを特定する。その3文字を p1,p2,p3 とする。
+   * テキスト内の数列を3項ずつで分割すると、
+   *   [79,59,12],[2,79,35],[8,28,20],[2,3,68],[8,9,68],[45,0,12],[9,67,68],[4,7,5],[23,27,1],[21...
+   * となる。分割されたそれぞれの組のうち、先頭の数字はp1で、2番目の数字はp2で、3番目の数字はp3で暗号化
+   * されているはずである。
+   * よって、分割された組の先頭のみを拾って新たな数列 g1 を生成すると
+   *   g1 = 79, 2, 8, 2, 8, 45, 9, 4, 23, 21, ...
+   * となる。同様に、2番目の数字を拾って g2、3番目の数字を拾って g3 とすると、
+   *   g2 = 59, 79, 28, 3, 9, 0, 67, 7, 27, ...
+   *   g3 = 12, 35, 20, 68, 68, 12, 68, 5, 1, ...
+   * になる。
+   *
+   * さらに、g1,g2,g3 の中での各数字の出現回数をカウントし、出現頻度の高い順に並べた数列をそれぞれ h1,h2,h3 とすると、
+   *   h1 = 71, 2, 19, ...
+   *   h2 = 79, 7, 10, ...
+   *   h3 = 68, 1, 16, ...
+   * となる。
+   * 平文は英文であることを前提とすると、最も出現頻度が高いASCII文字は半角スペースであると予想できるので、
+   * h1,h2,h3の初項は全て、暗号化された半角スペースであると考えられる。
+   * 半角スペースのASCIIコードは 32 であるから、
+   *   71^p1 = 32
+   *   79^p2 = 32
+   *   68^p3 = 32
+   *   (^ はxor演算子)
+   * を解くと、パスワードが求められる。(解いたら god となった)
+   *
+   * パスワードが求められれば、テキストを復号してASCII和を求めればよい。
+   */
+  def solve: Long = {
+    val str = fromFileToString(new java.io.File("src/main/resources/p059_cipher.txt"))
+    decrypt(str, findPassword(str, 3)).map { _.toInt }.sum
+  }
 }
