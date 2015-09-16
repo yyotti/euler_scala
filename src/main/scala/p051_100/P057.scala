@@ -64,10 +64,7 @@ object P057 {
     def apply(n: Fraction, f: Fraction): Fraction = n * f.~
   }
 
-  def frac(n: Int): Fraction = n match {
-    case 1 => Fraction(1, 2)
-    case _ => Fraction(1, 2 + frac(n - 1))
-  }
+  val frac: Stream[Fraction] = 0 #:: Fraction(1, 2) #:: frac.tail.scanLeft(Fraction(2, 5)) { case (f1, _) => Fraction(1, 2 + f1) }
 
   def solve(n: Int): Long =
     (1 to n)
