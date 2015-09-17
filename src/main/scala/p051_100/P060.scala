@@ -20,9 +20,9 @@ package project_euler
 object P060 {
   import commons._
 
-  def search(limit: Int)(n: Long, ps: List[Long]): Option[Long] = {
-    concatPrimes(filterConcatPrimes(n, ps), limit - 1) match {
-      case ls if ls.nonEmpty => Some(n + ls.map { _.sum }.min)
+  def search(n: Int, p: Long, ps: List[Long]): Option[Long] = {
+    concatPrimes(filterConcatPrimes(p, ps), n - 1) match {
+      case ls if ls.nonEmpty => Some(p + ls.map { _.sum }.min)
       case _ => None
     }
   }
@@ -38,18 +38,13 @@ object P060 {
     ps.filter { p => isConcatPrime(n, p) }
   }
 
-  def primes2(ret: (Long, List[Long]) => Option[Long]): Long = {
-    def primes3(m: Long, ls: List[Long], ps: List[Long]): Long =
-      if (!isPrime(m)) primes3(m + 2, ls, ps)
-      else ret(m, ls) match {
-        case Some(r) => r
-        case _ => primes3(m + 2, m :: ls, ps ++ List(m))
-      }
+  def solve(n: Int): Long =
+    primes
+      .tail
+      .scanLeft(List(primes.head)) { case (ls, p) => p :: ls }
+      .map { ls => search(n, ls.head, ls.tail) }
+      .find { _.isDefined }
+      .get
+      .get
 
-    primes3(3, List(2), Nil)
-  }
-
-  def solve(n: Int): Long = {
-    primes2(search(n))
-  }
 }
