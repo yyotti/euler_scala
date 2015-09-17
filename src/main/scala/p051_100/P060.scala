@@ -18,5 +18,38 @@ package project_euler
  * 任意の2つの素数を繋げたときに別の素数が生成される, 5つの素数の集合の和の中で最小のものを求めよ.
  */
 object P060 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  def search(limit: Int)(n: Long, ps: List[Long]): Option[Long] = {
+    concatPrimes(filterConcatPrimes(n, ps), limit - 1) match {
+      case ls if ls.nonEmpty => Some(n + ls.map { _.sum }.min)
+      case _ => None
+    }
+  }
+
+  def concatPrimes(ps: List[Long], k: Long): List[List[Long]] = (ps, k) match {
+    case (_, 0) => List(Nil)
+    case (Nil, _) => Nil
+    case (x :: xs, n) => concatPrimes(filterConcatPrimes(x, xs), n - 1).map { x :: _ } ++ concatPrimes(xs, n)
+  }
+
+  def filterConcatPrimes(n: Long, ps: List[Long]): List[Long] = {
+    def isConcatPrime(x: Long, y: Long) = isPrime((x.toString + y).toLong) && isPrime((y.toString + x).toLong)
+    ps.filter { p => isConcatPrime(n, p) }
+  }
+
+  def primes2(ret: (Long, List[Long]) => Option[Long]): Long = {
+    def primes3(m: Long, ls: List[Long], ps: List[Long]): Long =
+      if (!isPrime(m)) primes3(m + 2, ls, ps)
+      else ret(m, ls) match {
+        case Some(r) => r
+        case _ => primes3(m + 2, m :: ls, ps ++ List(m))
+      }
+
+    primes3(3, List(2), Nil)
+  }
+
+  def solve(n: Int): Long = {
+    primes2(search(n))
+  }
 }
