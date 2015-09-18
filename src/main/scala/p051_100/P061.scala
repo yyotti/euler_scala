@@ -39,5 +39,52 @@ package project_euler
  * 三角数, 四角数, 五角数, 六角数, 七角数, 八角数が全て表れる6つの巡回する4桁の数からなる唯一の順序集合の和を求めよ.
  */
 object P061 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  val ps = List(
+    from(1).map { n => n * (n + 1) / 2 },
+    from(1).map { n => n * n },
+    from(1).map { n => n * (3 * n - 1) / 2 },
+    from(1).map { n => n * (2 * n - 1) },
+    from(1).map { n => n * (5 * n - 3) / 2 },
+    from(1).map { n => n * (3 * n - 2) }
+  )
+
+  def permutations(ls: List[List[Long]]): List[List[Long]] = ls match {
+    case Nil => List(Nil)
+    case xs :: ys => xs.flatMap { x => permutations(ys).map { x :: _ } }
+  }
+
+  def isCyclic(ls: List[Long]): Boolean = {
+    def hasNext(x: Long, xs: List[Long]): Boolean = xs match {
+      case Nil => true
+      case _ => xs.filter { n => x % 100 == n / 100 } match {
+        case Nil => false
+        case y :: Nil => hasNext(y, xs.diff(List(y)))
+        case ys => ys.exists { n => hasNext(n, xs.diff(List(n))) }
+      }
+    }
+
+    def hasPrev(x: Long, xs: List[Long]): Boolean = xs match {
+      case Nil => true
+      case _ => xs.filter { n => x / 100 == n % 100 } match {
+        case Nil => false
+        case y :: Nil => hasPrev(y, xs.diff(List(y)))
+        case ys => ys.exists { n => hasPrev(n, xs.diff(List(n))) }
+      }
+    }
+
+    ls match {
+      case Nil => true
+      case _ => ls.exists { n => val xs = ls.diff(List(n)); hasNext(n, xs) && hasPrev(n, xs) }
+    }
+  }
+
+  def solve(n: Int): Long = {
+    val ls = ps.map { _.dropWhile { _ < 1000 }.takeWhile { _ < 10000 }.filter { k => k / 100 >= 10 && k % 100 >= 10 }.toList }.take(n)
+    permutations(ls).filter { xs => isCyclic(xs) } match {
+      case Nil => 0
+      case xs :: _ => xs.sum
+    }
+  }
 }
