@@ -42,17 +42,17 @@ object P061 {
   import commons._
 
   val ps = List(
-    from(1).map { n => n * (n + 1) / 2 },
-    from(1).map { n => n * n },
-    from(1).map { n => n * (3 * n - 1) / 2 },
-    from(1).map { n => n * (2 * n - 1) },
-    from(1).map { n => n * (5 * n - 3) / 2 },
-    from(1).map { n => n * (3 * n - 2) }
+    from(1).map { n => (3, n * (n + 1) / 2) },
+    from(1).map { n => (4, n * n) },
+    from(1).map { n => (5, n * (3 * n - 1) / 2) },
+    from(1).map { n => (6, n * (2 * n - 1)) },
+    from(1).map { n => (7, n * (5 * n - 3) / 2) },
+    from(1).map { n => (8, n * (3 * n - 2)) }
   )
 
-  def permutations(ls: List[List[Long]]): List[List[Long]] = ls match {
-    case Nil => List(Nil)
-    case xs :: ys => xs.flatMap { x => permutations(ys).map { x :: _ } }
+  def findNumbers(n: Long, ls: List[(Int, Long)]): List[List[Long]] = ls match {
+    case Nil => List(List(n))
+    case _ => ls.withFilter { case (_, k) => n % 100 == k / 100 }.flatMap { case (p, k) => findNumbers(k, ls.filter { _._1 != p }).map { n :: _ } }
   }
 
   def isCyclic(ls: List[Long]): Boolean = {
@@ -81,8 +81,8 @@ object P061 {
   }
 
   def solve(n: Int): Long = {
-    val ls = ps.map { _.dropWhile { _ < 1000 }.takeWhile { _ < 10000 }.filter { k => k / 100 >= 10 && k % 100 >= 10 }.toList }.take(n)
-    permutations(ls).filter { xs => isCyclic(xs) } match {
+    val (ls :: lss) = ps.map { _.dropWhile { _._2 < 1000 }.takeWhile { _._2 < 10000 }.filter { case (_, k) => k / 100 >= 10 && k % 100 >= 10 }.toList }.take(n)
+    ls.map { case (p, n) => findNumbers(n, lss.flatten).filter { xs => isCyclic(xs) } }.flatten match {
       case Nil => 0
       case xs :: _ => xs.sum
     }
