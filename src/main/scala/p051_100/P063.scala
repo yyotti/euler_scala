@@ -13,5 +13,17 @@ package project_euler
  * 自然数を n 乗して得られる n 桁の正整数は何個あるか?
  */
 object P063 {
-  def solve: Long = ???
+  import commons._
+
+  def solve: Long =
+    from(1)
+      .map { n =>
+        from(1)
+          .map { k => val kn = BigInt(k).pow(n.toInt); (kn, digitCount(kn)) }
+          .dropWhile { _._2 < n }
+          .takeWhile { _._2 == n }
+          .size
+      }
+      .takeWhile { _ > 0 }.sum
+
 }
