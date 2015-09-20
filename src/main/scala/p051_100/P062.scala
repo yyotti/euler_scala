@@ -14,5 +14,10 @@ package project_euler
  * 立方数になるような桁の置換をちょうど5つもつ最小の立方数を求めよ.
  */
 object P062 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  val cubes = from(1).map { n => val c = n * n * n; (c.toString, digitCount(c)) }
+
+  def solve(n: Int): Long =
+    cubes.find { case (c, d) => cubes.dropWhile { _._2 < d }.takeWhile { _._2 == d }.count { _._1.sorted == c.sorted } == n }.map { _._1.toLong }.get
 }
