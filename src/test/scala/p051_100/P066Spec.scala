@@ -4,6 +4,54 @@ import project_euler.P066
 import org.specs2.mutable._
 
 class P066Spec extends Specification {
+  "P066#findMinX(Long)" should {
+    "returns 3 if d = 2" in {
+      P066.findMinX(2) must beEqualTo(3)
+    }
+
+    "returns 2 if d = 3" in {
+      P066.findMinX(3) must beEqualTo(2)
+    }
+
+    "returns 9 if d = 5" in {
+      P066.findMinX(5) must beEqualTo(9)
+    }
+
+    "returns 5 if d = 6" in {
+      P066.findMinX(6) must beEqualTo(5)
+    }
+
+    "returns 8 if d = 7" in {
+      P066.findMinX(7) must beEqualTo(8)
+    }
+  }
+
+  "P066#isSquareNumber(Long)" should {
+    "returns true if d = 1" in {
+      P066.isSquareNumber(1) must beTrue
+    }
+
+    "returns false if d = 2" in {
+      P066.isSquareNumber(2) must beFalse
+    }
+
+    "returns false if d = 3" in {
+      P066.isSquareNumber(3) must beFalse
+    }
+
+    "returns true if d = 4" in {
+      P066.isSquareNumber(4) must beTrue
+    }
+
+    "returns false if d = 5" in {
+      P066.isSquareNumber(5) must beFalse
+    }
+
+    "returns false if d = 6" in {
+      P066.isSquareNumber(6) must beFalse
+    }
+  }
+
   "P066#solve(Int)" should {
     "returns 5 if n = 7" in {
       P066.solve(7) must beEqualTo(5)

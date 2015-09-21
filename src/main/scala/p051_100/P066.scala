@@ -44,5 +44,26 @@ package project_euler
  * D ≤ 1000 に対する x を最小にする解で, x が最大になるような D の値を見つけよ.
  */
 object P066 {
-  def solve(n: Int): Long = ???
+  def from(start: BigInt): Stream[BigInt] = start #:: from(start + 1)
+
+  val nums = from(1)
+
+  def findMinX(d: BigInt) =
+    nums
+      .dropWhile { _ < 2 }
+      .find { x => nums.takeWhile { _ < x }.exists { y => x * x - d * y * y == 1 } }
+      .get
+
+  def isSquareNumber(n: BigInt) = nums.map { i => i * i }.dropWhile { k => k < n }.head == n
+
+  def solve(n: Int): Long =
+    nums
+      .dropWhile { _ < 2 }
+      .takeWhile { _ <= n }
+      .withFilter { d => !isSquareNumber(d) }
+      .map { d => (d, findMinX(d)) }
+      .maxBy { _._2 }
+      ._1
+      .toLong
+
 }
