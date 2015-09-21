@@ -69,5 +69,48 @@ package project_euler
  * e についての連分数である近似分数の100項目の分子の桁の合計を求めよ.
  */
 object P065 {
-  def solve(n: Int): Long = ???
+  import commons._
+  import scala.language.implicitConversions
+
+  implicit def Int2Fraction(i: Int) = Fraction(i, 1)
+  implicit def BigInt2Fraction(i: BigInt) = Fraction(i, 1)
+
+  case class Fraction(n: BigInt, d: BigInt) {
+    lazy val lowestTerm = {
+      val k = gcd(n, d)
+      Fraction(n / k, d / k)
+    }
+
+    def +(that: Fraction): Fraction = {
+      val k = lcm(d, that.d)
+      val m = n * k / d + that.n * k / that.d
+
+      Fraction(m, k).lowestTerm
+    }
+
+    def *(that: Fraction): Fraction = {
+      Fraction(n * that.n, d * that.d).lowestTerm
+    }
+
+    def ~ : Fraction = Fraction(d, n)
+  }
+  object Fraction {
+    def apply(n: Fraction, f: Fraction): Fraction = n * f.~
+  }
+
+  val seq = from(1).flatMap { i => Seq(1, 2 * i, 1) }
+
+  def efrac(n: Int): Fraction = {
+    def e(n: Int, i: BigInt, seq: Stream[Long]): Fraction = n match {
+      case 1 => i
+      case _ => i + e(n - 1, seq.head, seq.tail).~
+    }
+
+    n match {
+      case 1 => 2
+      case _ => 2 + e(n - 1, seq.head, seq.tail).~
+    }
+  }
+
+  def solve(n: Int): Long = digits(efrac(n).n).sum.toLong
 }
