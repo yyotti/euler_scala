@@ -24,6 +24,14 @@ class P066Spec extends Specification {
     "returns 8 if d = 7" in {
       P066.findMinX(7) must beEqualTo(8)
     }
+
+    "returns 3 if d = 8" in {
+      P066.findMinX(8) must beEqualTo(3)
+    }
+
+    "returns 19 if d = 10" in {
+      P066.findMinX(10) must beEqualTo(19)
+    }
   }
 
   "P066#isSquareNumber(Long)" should {
@@ -49,6 +57,22 @@ class P066Spec extends Specification {
 
     "returns false if d = 6" in {
       P066.isSquareNumber(6) must beFalse
+    }
+
+    "returns false if d = 7" in {
+      P066.isSquareNumber(7) must beFalse
+    }
+
+    "returns false if d = 8" in {
+      P066.isSquareNumber(8) must beFalse
+    }
+
+    "returns true if d = 9" in {
+      P066.isSquareNumber(9) must beTrue
+    }
+
+    "returns false if d = 10" in {
+      P066.isSquareNumber(10) must beFalse
     }
   }
 
