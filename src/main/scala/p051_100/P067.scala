@@ -36,5 +36,31 @@ package project_euler
  * 解決するための効率的なアルゴリズムがあります. ;o)
  */
 object P067 {
-  def solve: Long = ???
+  import commons._
+
+  def findMaxRoute(lines: List[List[Int]]): Long =
+    lines.reverse.reduceLeft { (sums, line) =>
+      sums
+        .zip(sums.tail)
+        .map { case (a, b) => a.max(b) }
+        .zip(line)
+        .map { case (a, b) => a + b }
+    }.head
+
+  /**
+   * P018で作ったものがそのまま使えた。
+   *
+   * 頂点からではなく下から攻めるようにした。
+   * まず最も下の行の隣り合う数字のうち、大きい方を残した数列を新たに作る。
+   *   例) 8 5 9 3 → max(8, 5) max(5, 9) max(9 3) → 8 9 9
+   * 生成された数列と、下から2番目の行の数字との和をとる。
+   *   例)
+   *     2 4 6
+   *     8 9 9 → 2+8 4+9 6+9 → 10 13 15
+   * この結果を最下行として、最も上の行まで続けていく。残った1項が和の最大値である。
+   */
+  def solve: Long =
+    withSource(io.Source.fromFile(new java.io.File("src/main/resources/p067_triangle.txt"))) { src =>
+      findMaxRoute(src.getLines.toList.map { line => line.split(" ").map { _.toInt }.toList })
+    }
 }
