@@ -21,5 +21,13 @@ package project_euler
  * 1 < n < 10^7 で φ(n) が n を置換したものになっているもののうち, n/φ(n) が最小となる n を求めよ.
  */
 object P070 {
-  def solve: Long = ???
+  import commons._
+
+  def solve: Long =
+    from(2)
+      .takeWhile { _ < math.pow(10, 7) }
+      .map { n => (n, totient(n)) }
+      .filter { case (n, t) => n.toString.sorted == t.toString.sorted }
+      .minBy { case (n, t) => n.toDouble / t }
+      ._1
 }
