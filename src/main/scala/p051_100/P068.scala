@@ -54,5 +54,62 @@ package project_euler
  * (図は省略)
  */
 object P068 {
-  def solve(n: Int): Long = ???
+
+  def findNgonRings(n: Int): List[List[(Int, Int, Int)]] = {
+    def groupNodes(ls: Seq[Int]) =
+      (0 until n).map { k => (ls(k), ls(n + k), ls(if (k + 1 == n) k + 1 else n + k + 1)) }
+
+    def rolling(min: Int, ls: List[(Int, Int, Int)]): List[(Int, Int, Int)] = (min, ls) match {
+      case (m, (x, _, _) :: _) if m == x => ls
+      case (_, xs :: xss) => rolling(min, xss ::: List(xs))
+    }
+
+    val cache = collection.mutable.Set[String]()
+
+    def isNgonRing(ls: Seq[(Int, Int, Int)]) = {
+      val str = ls.foldLeft("") { case (s, (n1, n2, n3)) => s + n1 + n2 + n3 }
+      if (cache.contains(str) || ls.map { case (n1, n2, n3) => n1 + n2 + n3 }.distinct.size != 1) false
+      else {
+        cache.add(str)
+        true
+      }
+    }
+
+    (1 to 2 * n)
+      .permutations
+      .map { groupNodes }
+      .map { ls => rolling(ls.minBy { _._1 }._1, ls.toList) }
+      .withFilter { isNgonRing }
+      .toList
+      .distinct
+  }
+
+  /**
+   * 問題のサイズをnとする。問題の例ではn = 3である。
+   *
+   * 図の各ノードに対して番号を振っていく。番号kが振られたノードを「N(k)」と呼ぶことにする。
+   * 番号を振る際のルールは
+   * 1. 外側に突き出しているノードに対し、時計回りに1～nの番号を振る。
+   * 2. N(1)が接続されている内側のノードの番号を(n + 1)とし、時計回りに2nまで番号を振る。
+   * とする。
+   *
+   * 上記のルールに従って番号を振ると、N(k)(1 &le; k &le; n)が接続するのはN(n + k)となる。
+   * N(k)とN(n + k)の延長にあるノードはN(n + k + 1)となるので、1 &le; k &le; n に対して
+   *   N(1) + N(n + 1) + N(n + 2)
+   *   N(2) + N(n + 2) + N(n + 3)
+   *       ・・・
+   *   N(n - 1) + N(2n - 1) + N(2n + 1)
+   *   N(n) + N(2n) + N(2n + 1)
+   * の値が全て同じになるよう配置すればよい。
+   *
+   * ただし、最後のみノードの番号が(2n + 1)となってしまうので、kが2nを超えたら(k - n)とみなすことにする。
+   */
+  def solve(n: Int, d: Int): Long =
+    findNgonRings(n)
+      .map { ls => ls.flatMap { case (n1, n2, n3) => List(n1, n2, n3) }.mkString }
+      .filter { _.length == d }
+      .sorted
+      .reverse
+      .head
+      .toLong
 }
