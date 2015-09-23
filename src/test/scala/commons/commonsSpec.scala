@@ -286,4 +286,47 @@ class commonsSpec extends Specification {
       primeFactorsCount(644) must beEqualTo(Map(2 -> 2, 7 -> 1, 23 -> 1))
     }
   }
+
+  "totient(Int)" should {
+    "returns 1 if n = 1" in {
+      totient(1) must beEqualTo(1)
+    }
+
+    "returns 1 if n = 2" in {
+      totient(2) must beEqualTo(1)
+    }
+
+    "returns 2 if n = 3" in {
+      totient(3) must beEqualTo(2)
+    }
+
+    "returns 2 if n = 4" in {
+      totient(4) must beEqualTo(2)
+    }
+
+    "returns 4 if n = 5" in {
+      totient(5) must beEqualTo(4)
+    }
+
+    "returns 2 if n = 6" in {
+      totient(6) must beEqualTo(2)
+    }
+
+    "returns 6 if n = 7" in {
+      totient(7) must beEqualTo(6)
+    }
+
+    "returns 4 if n = 8" in {
+      totient(8) must beEqualTo(4)
+    }
+
+    "returns 6 if n = 9" in {
+      totient(9) must beEqualTo(6)
+    }
+
+    "returns 4 if n = 10" in {
+      totient(10) must beEqualTo(4)
+    }
+  }
+
 }
