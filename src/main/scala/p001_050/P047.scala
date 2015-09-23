@@ -32,12 +32,11 @@ package project_euler
 object P047 {
   import commons._
 
-  def primeFactorsCount(n: Long) =
-    primeFactors(n).groupBy { p => p }.map { case (p, list) => (p, list.size) }.toSet
+  def primeFactorsSet(n: Long) = primeFactorsCount(n).toSet
 
   def solve(n: Int): Long =
     from(2)
-      .map { n => primeFactorsCount(n) }
+      .map { n => primeFactorsSet(n) }
       .sliding(n)
       .filter { ls =>
         ls.combinations(2).forall {

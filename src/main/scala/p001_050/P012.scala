@@ -47,7 +47,7 @@ object P012 {
   val triangleNumbers: Stream[Long] = 1 #:: from(2).zip(triangleNumbers).map { case (a, b) => a + b }
 
   def factorsCount(n: Long) =
-    primeFactors(n).groupBy { k => k }.map { case (k, seq) => (k, seq.size + 1) }.values.product
+    primeFactorsCount(n).map { case (k, m) => (k, m + 1) }.values.product
 
   def solve(n: Int): Long =
     triangleNumbers.find { k => factorsCount(k) > n }.get

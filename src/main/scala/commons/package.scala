@@ -57,4 +57,7 @@ package object commons {
   def isPandigitalNumber(n: Long) = n.toString.sorted == "123456789"
 
   def lcm(m: BigInt, n: BigInt): BigInt = m * n / gcd(m, n)
+
+  def primeFactorsCount(n: Long) =
+    primeFactors(n).groupBy { k => k }.map { case (k, seq) => (k, seq.size) }
 }

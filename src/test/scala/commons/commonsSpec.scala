@@ -273,4 +273,17 @@ class commonsSpec extends Specification {
     }
   }
 
+  "primeFactorsCount(Long)" should {
+    "returns [(2, 1), (7, 1)] if n = 14" in {
+      primeFactorsCount(14) must beEqualTo(Map(2 -> 1, 7 -> 1))
+    }
+
+    "returns [(3, 1), (5, 1)] if n = 15" in {
+      primeFactorsCount(15) must beEqualTo(Map(3 -> 1, 5 -> 1))
+    }
+
+    "returns [(2, 2), (7, 1), (23, 1)] if n = 644" in {
+      primeFactorsCount(644) must beEqualTo(Map(2 -> 2, 7 -> 1, 23 -> 1))
+    }
+  }
 }
