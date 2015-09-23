@@ -42,5 +42,20 @@ package project_euler
  * n ≤ 1,000,000で n/φ(n) が最大となる値を見つけよ.
  */
 object P069 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  def totient(n: Long) = {
+    val (z, d) = primeFactorsCount(n).foldLeft((n, 1L)) { case ((z, d), (p, e)) => (z * (p - 1), d * p) }
+    z / d
+  }
+
+  /**
+   * k, lを互いに素な自然数とすると、φ(kl) = φ(k)φ(l)が成立する。
+   * このことから、nの素因数分解を
+   *   n = p1^e1 * p2^e2 * ... * pk^ek  (pkは素数)
+   * とすると、
+   *   φ(n) = n * (1 - 1/p1) * (1 - 1/p2) * ... * (1 - 1/pk)
+   * でφ(n)を計算できる。
+   */
+  def solve(n: Int): Long = (2 to n).maxBy { k => k.toDouble / totient(k) }
 }
