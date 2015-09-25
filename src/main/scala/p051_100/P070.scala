@@ -23,11 +23,31 @@ package project_euler
 object P070 {
   import commons._
 
-  def solve: Long =
-    from(2)
-      .takeWhile { _ < math.pow(10, 7) }
-      .map { n => (n, totient(n)) }
-      .filter { case (n, t) => n.toString.sorted == t.toString.sorted }
+  /**
+   * n/φ(n)を小さくしたいので、φ(n)をより大きくすればよい。
+   * そのためにはnの素因数がより少なくなればよく、nが素数のときが理想だが、
+   * nが素数のとき φ(n) = n - 1 なので、φ(n)がnを置換した値にならない。
+   * よって、nの素因数が2つの時が理想となる。
+   *
+   * nの2つの素因数をp1,p2とすると、
+   *   φ(p1*p2) = φ(p1)*φ(p2)
+   *             = (p1 - 1) * (p2 - 1)
+   * p1 * p2 = n であるから、
+   *   φ(n) = (p1 - 1) * (p2 - 1)
+   * となる。
+   */
+  def solve: Long = {
+    val max = math.pow(10, 7)
+
+    primes
+      .takeWhile { _ < max / 2 }
+      .flatMap { p1 =>
+        primes
+          .takeWhile { p2 => p2 < p1 && p1 * p2 < max }
+          .reverse
+          .find { p2 => (p1 * p2).toString.sorted == ((p1 - 1) * (p2 - 1)).toString.sorted }
+          .map { p2 => (p1 * p2, (p1 - 1) * (p2 - 1)) } }
       .minBy { case (n, t) => n.toDouble / t }
       ._1
+  }
 }
