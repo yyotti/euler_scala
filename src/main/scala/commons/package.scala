@@ -61,8 +61,7 @@ package object commons {
   def primeFactorsCount(n: Long) =
     primeFactors(n).groupBy { k => k }.map { case (k, seq) => (k, seq.size) }
 
-  def totient(n: Long) = {
-    val (z, d) = primeFactors(n).toSet.foldLeft((BigInt(n), BigInt(1))) { case ((z, d), p) => (z * (p - 1), d * p) }
-    (z / d).toLong
-  }
+  def totient(n: Long) =
+    primeFactors(n).toSet.foldLeft(n) { case (z, p) => z * (p - 1) / p }
+
 }
