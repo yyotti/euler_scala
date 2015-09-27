@@ -46,5 +46,19 @@ package project_euler
  * 100万未満の数から開始する列の中で, 60個の循環しない項を持つものはいくつあるか?
  */
 object P074 {
-  def solve: Long = ???
+  import commons._
+
+  def findNonRepeatingPart(start: Int): List[Int] = {
+    def repeating(s: Int, set: Set[Int]): List[Int] =
+      if (set.contains(s)) Nil
+      else {
+        val next = digits(s).map { d => fact(d) }.sum.toInt
+        s :: repeating(next, set + s)
+      }
+
+    repeating(start, Set[Int]())
+  }
+
+  def solve: Long =
+    (1 until 1000000).count { n => findNonRepeatingPart(n).size == 60 }
 }
