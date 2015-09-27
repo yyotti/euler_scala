@@ -23,5 +23,45 @@ package project_euler
  * d ≤ 1,000,000について真既約分数を大きさ順に並べたとき, 3/7のすぐ左の分数の分子を求めよ.
  */
 object P071 {
-  def solve(d: Int): Long = ???
+  import commons._
+
+  def max(x: (Long, Long), y: (Long, Long)) = {
+    val (n1, d1) = x
+    val (n2, d2) = y
+    val m = lcm(d1, d2)
+    if (n1 * m / d1 > n2 * m / d2) (n1, d1)
+    else (n2, d2)
+  }
+
+  /**
+   * 2 &le; k &le; d、1 &le; x &le; k として、x/k &lt; 3/7を満たす x/k の最大値を求める。
+   *
+   * lcm(m, n)をmとnの最小公倍数、gcd(m, n)をmとnの最大公約数とする。
+   *   m = lcm(k, 7)
+   *   p = m/7
+   *   q = m/k
+   * とすると、x/k &lt; 3/7を通分すると
+   *   (x*q)/(k*q) &lt; (3*p)/(7*p)
+   * となる。これを満たす左辺の最大値は (x*q-1)/(k*q) であるが、これを約分して分母が k に
+   * ならなければならない。
+   * そこで、分子を
+   *   x*q-i ≡ 0 (mod q)
+   * となる自然数iを見つければよい。
+   *
+   * 条件を満たす全てのkについて上記の手順で最大値を計算し、その中の最大値が答えとなる。
+   */
+  def solve(d: Int): Long = {
+    val nums = from(1)
+    nums
+      .tail
+      .takeWhile { _ <= d }
+      .flatMap { k =>
+        val m = lcm(k, 7).toLong
+        val p = m / 7
+        val q = m / k
+        nums.map { i => 3 * p - i }.find { _ % q == 0 }.map { n => val g = gcd(n, m).toInt; (n / g, m / g) }
+      }
+      .foldLeft ((1L, 7L)) { max(_, _) }
+      ._1
+  }
 }
