@@ -27,7 +27,7 @@ object P072 {
   import commons._
 
   /**
-   * 1 &lt; k &le; d, 1 &le; n &lt; d とする。
+   * 1 &lt; k &le; d, 1 &le; n &lt; k とする。
    *
    * nとkが互いに素である場合、n/kは真既約分数である。
    * nとkの最大公約数をm(m &ge; 2)とし、
