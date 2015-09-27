@@ -24,5 +24,24 @@ package project_euler
  * では, d ≤ 12,000 について真既約分数をソートした集合では, 1/3 と 1/2 の間に何個の分数があるか?
  */
 object P073 {
-  def solve(d: Int): Long = ???
+  import commons._
+
+  /**
+   * 1 &lt; k &le; d, 1 &le; n &lt; k とする。
+   *
+   * すべてのkについて、1/3 &lt; n/k &lt; 1/2 を満たすnの個数をカウントしてその和をとればよい。
+   * ただし、重複は除くので、nとkが互いに素なものをカウントする。
+   *
+   * あるkについて、チェックするnの範囲を考えると、1/3 &lt; n/k &lt; 1/2 の辺々にkをかけて
+   *   k/3 &lt; n &lt; k/2
+   * の範囲でチェックすればよい。
+   */
+  def solve(d: Int): Long = {
+    val nums = (1 to (d / 2))
+    (2 to d).foldLeft(0) { (z, k) =>
+      val min = k.toDouble / 3
+      val max = k.toDouble / 2
+      z + nums.dropWhile { _ <= min }.takeWhile { _ < max }.count { n => gcd(n, k) == 1 }
+    }
+  }
 }
