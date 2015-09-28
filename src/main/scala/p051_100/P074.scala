@@ -48,17 +48,20 @@ package project_euler
 object P074 {
   import commons._
 
-  def findNonRepeatingPart(start: Int): List[Int] = {
+  def findNonRepeatingPart(start: Int, cache: collection.mutable.Map[Int, List[Int]]): List[Int] = {
     def repeating(s: Int, set: Set[Int]): List[Int] =
       if (set.contains(s)) Nil
+      else if (cache.contains(s)) cache(s)
       else {
         val next = digits(s).map { d => fact(d) }.sum.toInt
         s :: repeating(next, set + s)
       }
 
-    repeating(start, Set[Int]())
+    cache.getOrElseUpdate(start, repeating(start, Set[Int]()))
   }
 
-  def solve: Long =
-    (1 until 1000000).count { n => findNonRepeatingPart(n).size == 60 }
+  def solve: Long = {
+    val cache = collection.mutable.Map[Int, List[Int]]()
+    (1 until 1000000).count { n => findNonRepeatingPart(n, cache).size == 60 }
+  }
 }
