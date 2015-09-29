@@ -41,5 +41,52 @@ package project_euler
  * 注: この問題は最近変更されました. あなたが正しいパラメータを使っているか確認してください.
  */
 object P075 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  def len(m: Long, n: Long): Long = 2 * m * (m + n)
+
+  /**
+   * 鉄線の長さをlとすると、lはピタゴラス数(a, b, c)の和である。
+   *
+   * m,nを下記の条件を満たす自然数とする。
+   * ・m &gt; n
+   * ・mとnは互いに素
+   * ・mとnの差は奇数
+   * このとき、(a, b, c)を原始ピタゴラス数とすると、
+   *   (a, b, c) = (m^2 - n^2, 2mn, m^2 + n^2)
+   * で表される。
+   * ピタゴラス数は原始ピタゴラス数の整数倍である。
+   *
+   * いま、l = a + b + c であるから、
+   *   l = (m^2 - n^2) + 2mn + (m^2 + n^2)
+   *     = 2m^2 + 2mn
+   *     = 2m(m + n)
+   *
+   * よって、lの最大値をLとすると、l &le; L を満たす全てのm,nと、あるlについて整数倍したものの
+   * 総数が求める値となる。
+   *
+   * ただし、l = 120 のように、複数のピタゴラス数で表現できてはいけないので、最終的に
+   * 複数回出現した長さは排除しなければならない。
+   *
+   * また、mの範囲を考えると、
+   *   l = 2m(m + n)
+   * よりmの最大値はn = 1の場合で、
+   *   l = 2m(m + 1)
+   *   2m^2 + 2m - l = 0
+   * を満たす2以上のmについて調べていけばよい。
+   */
+  def solve(l: Int): Long =
+    from(2)
+      .takeWhile { m => 2 * m * (m + 1) <= l }
+      .flatMap { m =>
+        from(if (m % 2 == 0) 1 else 2, 2)
+          .takeWhile { _ < m }
+          .withFilter { n => gcd(m, n) == 1 }
+          .flatMap { n => from(1).map { _ * len(m, n).toLong }.takeWhile { _ <= l } }
+          .filter { _ <= l }
+      }
+      .groupBy { l => l }
+      .filter { case (_, ls) => ls.size == 1 }
+      .size
+
 }
