@@ -30,5 +30,39 @@ package project_euler
  * p(n) が100万で割り切れる場合に最小となる n を求めよ.
  */
 object P078 {
-  def solve: Long = ???
+  import commons._
+
+  def pentagonal(n: Long) = n * (3 * n - 1) / 2
+
+  val pentagonals = from(1).flatMap { i => Seq(pentagonal(i), pentagonal(-i)) }
+  val signs = from(1).flatMap { _ => Seq(1, 1, -1, -1) }
+
+  val cache = collection.mutable.Map[Long, BigInt]()
+
+  def p(n: Long): BigInt = n match {
+    case n if n < 0 => 0
+    case 0 => 1
+    case _ => pentagonals.zip(signs).takeWhile { _._1 <= n }.foldLeft(BigInt(0)) { case (z, (k, sign)) => sign * cache.getOrElseUpdate(n - k, p(n - k)) + z }
+  }
+
+  /**
+   * これもP076と同じだが、普通にやると膨大な時間がかかってしまうのでやり方を変える。
+   *
+   * 正攻法として、分割数の問題と見る。(以下、Wikipediaの「分割数」のページを参考に実装)
+   * 整数nの分割数 p(n) を下記のように定義する。
+   *   p(n) = 0   if n &lt; 0
+   *          1   if n = 0
+   *          p(n - 1) + p(n - 2) - p(n - 5) - p(n - 7) + p(n - 12) + ...     otherwise
+   * ここで、otherwise の場合の右辺の各項の引数 n - 1, n - 2, ..., n - k において、
+   *   k = m(3m-1)/2   (m = 1, -1, 2, -2, 3, -3, ...)
+   * である。k &le; n の範囲で和をとる。各p(n - k)の符号は、++--++--...と変化する。
+   *
+   * 上記をそのまま実装すれば解けるには解けるのだが、やはり時間がかかりすぎる。
+   * n &ge; 1 の場合の右辺で再帰するのをできる限り防ぐために、既に出現したp(n - k)の値は
+   * キャッシュする。
+   */
+  def solve: Long = {
+    cache.clear
+    from(1).find { i => p(i) % 1000000 == 0 }.get
+  }
 }
