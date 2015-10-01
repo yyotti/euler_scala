@@ -4,7 +4,7 @@ import project_euler.P078
 import org.specs2.mutable._
 
 class P078Spec extends Specification {
-  "P078#pentagonal(Long)" should {
+  "P078#pentagonal(Int)" should {
     "returns 0 if n = 0" in {
       P078.pentagonal(0) must beEqualTo(0)
     }
@@ -87,12 +87,12 @@ class P078Spec extends Specification {
       P078.p(8) must beEqualTo(22)
     }
 
-    "returns 190569292 if n = 100" in {
-      P078.p(100) must beEqualTo(190569292)
+    "returns 569292 if n = 100" in {
+      P078.p(100) must beEqualTo(569292)
     }
 
-    "returns 3972999029388 if n = 200" in {
-      P078.p(200) must beEqualTo(3972999029388L)
+    "returns 29388 if n = 200" in {
+      P078.p(200) must beEqualTo(29388)
     }
   }
 
