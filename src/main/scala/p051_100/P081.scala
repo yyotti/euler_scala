@@ -28,5 +28,22 @@ package project_euler
  * 同様に左上のセルから開始し右下のセルで終わり, かつ右方向と下方向にのみ移動するときの最小のパスの和を求めよ.
  */
 object P081 {
-  def solve: Long = ???
+  import commons._
+
+  def findMinRoute(matrix: Array[Array[Int]], i: Int, j: Int): Long = {
+    val rMax = matrix.length - 1
+    val dMax = matrix.length - 1
+
+    if (j == rMax) matrix.drop(i).map { _(j) }.sum
+    else if (i == dMax) matrix(i).drop(j).sum
+    else matrix(i)(j) + findMinRoute(matrix, i + 1, j).min(findMinRoute(matrix, i, j + 1))
+  }
+
+  def solve: Long = {
+    val matrix = withSource(io.Source.fromFile(new java.io.File("src/main/resources/p081_matrix.txt"))) { src =>
+      src.getLines.map { _.split(",").map { _.toInt }.toArray }.toArray
+    }
+
+    findMinRoute(matrix, 0, 0)
+  }
 }
