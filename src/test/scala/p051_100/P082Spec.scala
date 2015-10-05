@@ -15,42 +15,30 @@ class P082Spec extends Specification {
   )
 
   "P082#init(Array[Array[Int]])" should {
-    "returns [(131, (0, 0)), (Int.MaxValue, (0, 1)), ...] if (matrix, startI) = (<省略>, 0)" in {
+    "returns [(131, (0, 0)), (Int.MaxValue, (0, 1)), ...] if matrix = <省略>" in {
       val expected = PriorityQueue(
         (131, (0, 0)), (Int.MaxValue, (0, 1)), (Int.MaxValue, (0, 2)), (Int.MaxValue, (0, 3)), (Int.MaxValue, (0, 4)),
-        (Int.MaxValue, (1, 0)), (Int.MaxValue, (1, 1)), (Int.MaxValue, (1, 2)), (Int.MaxValue, (1, 3)), (Int.MaxValue, (1, 4)),
-        (Int.MaxValue, (2, 0)), (Int.MaxValue, (2, 1)), (Int.MaxValue, (2, 2)), (Int.MaxValue, (2, 3)), (Int.MaxValue, (2, 4)),
-        (Int.MaxValue, (3, 0)), (Int.MaxValue, (3, 1)), (Int.MaxValue, (3, 2)), (Int.MaxValue, (3, 3)), (Int.MaxValue, (3, 4)),
-        (Int.MaxValue, (4, 0)), (Int.MaxValue, (4, 1)), (Int.MaxValue, (4, 2)), (Int.MaxValue, (4, 3)), (Int.MaxValue, (4, 4))
-      )(Ordering.by[(Int, (Int, Int)), Int] { _._1 }.reverse)
-
-      P082.init(matrix, 0) must beEqualTo(expected)
-    }
-
-    "returns [(630, (0, 0)), (Int.MaxValue, (0, 1)), ...] if (matrix, startI) = (<省略>, 2)" in {
-      val expected = PriorityQueue(
-        (Int.MaxValue, (0, 0)), (Int.MaxValue, (0, 1)), (Int.MaxValue, (0, 2)), (Int.MaxValue, (0, 3)), (Int.MaxValue, (0, 4)),
-        (Int.MaxValue, (1, 0)), (Int.MaxValue, (1, 1)), (Int.MaxValue, (1, 2)), (Int.MaxValue, (1, 3)), (Int.MaxValue, (1, 4)),
+        (201, (1, 0)), (Int.MaxValue, (1, 1)), (Int.MaxValue, (1, 2)), (Int.MaxValue, (1, 3)), (Int.MaxValue, (1, 4)),
         (630, (2, 0)), (Int.MaxValue, (2, 1)), (Int.MaxValue, (2, 2)), (Int.MaxValue, (2, 3)), (Int.MaxValue, (2, 4)),
-        (Int.MaxValue, (3, 0)), (Int.MaxValue, (3, 1)), (Int.MaxValue, (3, 2)), (Int.MaxValue, (3, 3)), (Int.MaxValue, (3, 4)),
-        (Int.MaxValue, (4, 0)), (Int.MaxValue, (4, 1)), (Int.MaxValue, (4, 2)), (Int.MaxValue, (4, 3)), (Int.MaxValue, (4, 4))
+        (537, (3, 0)), (Int.MaxValue, (3, 1)), (Int.MaxValue, (3, 2)), (Int.MaxValue, (3, 3)), (Int.MaxValue, (3, 4)),
+        (805, (4, 0)), (Int.MaxValue, (4, 1)), (Int.MaxValue, (4, 2)), (Int.MaxValue, (4, 3)), (Int.MaxValue, (4, 4))
       )(Ordering.by[(Int, (Int, Int)), Int] { _._1 }.reverse)
 
-      P082.init(matrix, 2) must beEqualTo(expected)
+      P082.init(matrix) must beEqualTo(expected)
     }
   }
 
-  "P082#findMinRoute(Array[Array[Int]], PriorityQueue[(Int, Vertex), Map[Vertex, Vertex])" should {
+  "P082#findMinRoute(Array[Array[Int]], PriorityQueue[(Int, Vertex)])" should {
     "returns 994 if (matrix, queue) = (<省略>, <省略>)" in {
       val queue = PriorityQueue(
-        (Int.MaxValue, (0, 0)), (Int.MaxValue, (0, 1)), (Int.MaxValue, (0, 2)), (Int.MaxValue, (0, 3)), (Int.MaxValue, (0, 4)),
+        (131, (0, 0)), (Int.MaxValue, (0, 1)), (Int.MaxValue, (0, 2)), (Int.MaxValue, (0, 3)), (Int.MaxValue, (0, 4)),
         (201, (1, 0)), (Int.MaxValue, (1, 1)), (Int.MaxValue, (1, 2)), (Int.MaxValue, (1, 3)), (Int.MaxValue, (1, 4)),
-        (Int.MaxValue, (2, 0)), (Int.MaxValue, (2, 1)), (Int.MaxValue, (2, 2)), (Int.MaxValue, (2, 3)), (Int.MaxValue, (2, 4)),
-        (Int.MaxValue, (3, 0)), (Int.MaxValue, (3, 1)), (Int.MaxValue, (3, 2)), (Int.MaxValue, (3, 3)), (Int.MaxValue, (3, 4)),
-        (Int.MaxValue, (4, 0)), (Int.MaxValue, (4, 1)), (Int.MaxValue, (4, 2)), (Int.MaxValue, (4, 3)), (Int.MaxValue, (4, 4))
+        (630, (2, 0)), (Int.MaxValue, (2, 1)), (Int.MaxValue, (2, 2)), (Int.MaxValue, (2, 3)), (Int.MaxValue, (2, 4)),
+        (537, (3, 0)), (Int.MaxValue, (3, 1)), (Int.MaxValue, (3, 2)), (Int.MaxValue, (3, 3)), (Int.MaxValue, (3, 4)),
+        (805, (4, 0)), (Int.MaxValue, (4, 1)), (Int.MaxValue, (4, 2)), (Int.MaxValue, (4, 3)), (Int.MaxValue, (4, 4))
       )(Ordering.by[(Int, (Int, Int)), Int] { _._1 }.reverse)
 
-      P082.findMinRoute(matrix, queue, Map.empty, 1) must beEqualTo(994)
+      P082.findMinRoute(matrix, queue) must beEqualTo(994)
     }
   }
 
