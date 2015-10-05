@@ -28,7 +28,7 @@ class P081Spec extends Specification {
     }
   }
 
-  "P081#findMinRoute(Array[Array[Int]], Int, Int)" should {
+  "P081#findMinRoute(Array[Array[Int]], PriorityQueue[(Int, Vertex)])" should {
     "returns 2427 if (matrix, queue) = (<省略>, <省略>)" in {
       val queue = PriorityQueue(
         (131, (0, 0)), (Int.MaxValue, (0, 1)), (Int.MaxValue, (0, 2)), (Int.MaxValue, (0, 3)), (Int.MaxValue, (0, 4)),
@@ -38,7 +38,7 @@ class P081Spec extends Specification {
         (Int.MaxValue, (4, 0)), (Int.MaxValue, (4, 1)), (Int.MaxValue, (4, 2)), (Int.MaxValue, (4, 3)), (Int.MaxValue, (4, 4))
       )(Ordering.by[(Int, (Int, Int)), Int] { _._1 }.reverse)
 
-      P081.findMinRoute(matrix, queue, Map.empty) must beEqualTo(2427)
+      P081.findMinRoute(matrix, queue) must beEqualTo(2427)
     }
   }
 

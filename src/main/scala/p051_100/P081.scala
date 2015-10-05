@@ -42,43 +42,31 @@ object P081 {
         }
       }
 
-  def findMinRoute(matrix: Array[Array[Int]], queue: PriorityQueue[(Int, Vertex)], prev: Map[Vertex, Vertex]): Long = {
+  def findMinRoute(matrix: Array[Array[Int]], queue: PriorityQueue[(Int, Vertex)]): Long = {
     val iMax = matrix.length - 1
     val jMax = matrix(0).length - 1
 
-    def next(u: Vertex) = u match {
-      case (i, j) if (i, j) == (iMax, jMax) => Nil
-      case (i, j) if i == iMax => List((i, j + 1))
-      case (i, j) if j == jMax => List((i + 1, j))
-      case (i, j) => List((i, j + 1), (i + 1, j))
-    }
+    def next(i: Int, j: Int) =
+      if ((i, j) == (iMax, jMax)) Nil
+      else if (i == iMax) List((i, j + 1))
+      else if (j == jMax) List((i + 1, j))
+      else List((i, j + 1), (i + 1, j))
 
     def replace(q: PriorityQueue[(Int, Vertex)], u: Vertex, newVal: Int) = q.filter { case (_, v) => v != u } += ((newVal, u))
 
-    def sumRoute(prev: Map[Vertex, Vertex]) = {
-      def toList(p: Vertex): List[Int] = p match {
-        case (0, 0) => List(matrix(0)(0))
-        case (i, j) => matrix(i)(j) :: toList(prev(p))
-      }
-
-      toList((iMax, jMax)).sum
-    }
-
-    queue match {
-      case q if q.isEmpty => sumRoute(prev)
-      case q => {
-        val (du, u) = queue.dequeue
-        val (r, route) =
-          next(u)
-            .foldLeft((q, prev)) { case ((q, prev), (x, y)) =>
-              val alt = du + matrix(x)(y)
-              q.find { case (_, p) => p == (x, y) } match {
-                case Some((value, p)) if (value > alt) => (replace(q, p, alt), prev + (p -> u))
-                case _ => (q, prev)
-              }
+    val (du, (i, j)) = queue.dequeue
+    if ((i, j) == (iMax, jMax)) du
+    else {
+      val q =
+        next(i, j)
+          .foldLeft(queue) { case (q, (x, y)) =>
+            val alt = du + matrix(x)(y)
+            q.find { case (_, p) => p == (x, y) } match {
+              case Some((value, p)) if (value > alt) => replace(q, p, alt)
+              case _ => q
             }
-        findMinRoute(matrix, r, route)
-      }
+          }
+      findMinRoute(matrix, q)
     }
   }
 
@@ -107,6 +95,6 @@ object P081 {
       src.getLines.map { _.split(",").map { _.toInt }.toArray }.toArray
     }
 
-    findMinRoute(matrix, init(matrix), Map.empty)
+    findMinRoute(matrix, init(matrix))
   }
 }
