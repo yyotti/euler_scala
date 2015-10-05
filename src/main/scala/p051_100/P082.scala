@@ -31,5 +31,74 @@ package project_euler
  * 今, 31Kのテキストファイルmatrix.txtには80×80の行列が書かれている. 一番左の行から一番右の行へ移動する際の一番小さなパスの和を求めよ.
  */
 object P082 {
-  def solve: Long = ???
+  import commons._
+  import collection.mutable.PriorityQueue
+
+  type Vertex = (Int, Int)
+
+  def init(matrix: Array[Array[Int]], startI: Int) =
+    PriorityQueue.empty[(Int, Vertex)](Ordering.by[(Int, Vertex), Int] { _._1 }.reverse) ++=
+      (0 to matrix.length - 1).flatMap { i =>
+        (0 to matrix(i).length - 1).map { j =>
+          val dv = if ((i, j) == (startI, 0)) matrix(startI)(0) else Int.MaxValue
+          (dv, (i, j))
+        }
+      }
+
+  def findMinRoute(matrix: Array[Array[Int]], queue: PriorityQueue[(Int, Vertex)], prev: Map[Vertex, Vertex], startI: Int): Long = {
+    val iMax = matrix.length - 1
+    val jMax = matrix(0).length - 1
+
+    def next(u: Vertex) = u match {
+      case (_, j) if j == jMax => Nil
+      case (i, j) if i == 0 => List((i, j + 1), (i + 1, j))
+      case (i, j) if i == iMax => List((i - 1, j), (i, j + 1))
+      case (i, j) => List((i - 1, j), (i, j + 1), (i + 1, j))
+    }
+
+    def replace(q: PriorityQueue[(Int, Vertex)], u: Vertex, newVal: Int) = q.filter { case (_, v) => v != u } += ((newVal, u))
+
+    def sumRoute(prev: Map[Vertex, Vertex]) = {
+      def toList(p: Vertex): List[Int] = p match {
+        case (i, 0) if i == startI => List(matrix(i)(0))
+        case (i, j) => matrix(i)(j) :: toList(prev(p))
+      }
+
+      prev
+        .keys
+        .withFilter { case (_, toJ) => toJ == jMax }
+        .map { goal => toList(goal).sum }
+        .min
+    }
+
+    queue match {
+      case q if q.isEmpty => sumRoute(prev)
+      case q => {
+        val (du, u) = queue.dequeue
+        val (r, route) =
+          next(u)
+            .foldLeft((q, prev)) { case ((q, prev), (x, y)) =>
+              val alt = du + matrix(x)(y)
+              q.find { case (_, p) => p == (x, y) } match {
+                case Some((value, p)) if (value > alt) => (replace(q, p, alt), prev + (p -> u))
+                case _ => (q, prev)
+              }
+            }
+        findMinRoute(matrix, r, route, startI)
+      }
+    }
+  }
+
+  /**
+   * P081と同様、ダイクストラ法でやれる。
+   */
+  def solve: Long = {
+    val matrix = withSource(io.Source.fromFile(new java.io.File("src/main/resources/p082_matrix.txt"))) { src =>
+      src.getLines.map { _.split(",").map { _.toInt }.toArray }.toArray
+    }
+
+    (0 to matrix.length - 1).map { i =>
+      findMinRoute(matrix, init(matrix, i), Map.empty, i)
+    }.min
+  }
 }
