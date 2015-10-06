@@ -120,5 +120,104 @@ package project_euler
  *   これを繰り返す。繰り返す途中で三連続でぞろ目が出たら強制的に刑務所行き）
  */
 object P084 {
-  def solve(n: Int): String = ???
+  val board = List(
+    'GO, 'A1, 'CC1, 'A2, 'T1, 'R1, 'B1, 'CH1, 'B2, 'B3, 'JAIL, 'C1, 'U1, 'C2, 'C3, 'R2, 'D1, 'CC2, 'D2, 'D3,
+    'FP, 'E1, 'CH2, 'E2, 'E3, 'R3, 'F1, 'F2, 'U2, 'F3, 'G2J, 'G1, 'G2, 'CC3, 'G3, 'R4, 'CH3, 'H1, 'T2, 'H2
+  )
+
+  val communityChestCards = List(
+    'GO, 'JAIL, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE
+  )
+
+  val chanceCards = List(
+    'GO, 'JAIL, 'C1, 'E3, 'H2, 'R1, 'R, 'R, 'U, 'BACK3, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE, 'NONE
+  )
+
+  val rand = new util.Random(System.currentTimeMillis)
+
+  def roll(dice: Int) = (rand.nextInt(dice) + 1, rand.nextInt(dice) + 1)
+
+  def slide[A](list: List[A], n: Int): List[A] = (list, n) match {
+    case (Nil, _) => Nil
+    case (_, 0) => list
+    case (ls, n) if ls.size <= n => slide(ls, n % ls.size)
+    case _ =>
+      val (ts, hs) = list.splitAt(n)
+      hs ::: ts
+  }
+
+  def shuffle[A](ls: List[A], n: Int): List[A] = {
+    def swap(ls: List[A], i: Int, j: Int): List[A] = ls.updated(i, ls(j)).updated(j, ls(i))
+
+    n match {
+      case 0 => ls
+      case _ => shuffle(swap(ls, rand.nextInt(ls.size), rand.nextInt(ls.size)), n - 1)
+    }
+  }
+
+  def rollAndMove(dice: Int, pos: Symbol, ccCards: List[Symbol], cCards: List[Symbol]): (List[Symbol], List[Symbol], List[Symbol]) = {
+    def diceSeq(dice: Int, count: Int): List[Int] = count match {
+      case c if c > 3 => Nil
+      case _ =>
+        val (d1, d2) = roll(dice)
+        if (d1 == d2 && count == 3) -1 :: Nil
+        else if (d1 == d2) (d1 + d2) :: diceSeq(dice, count + 1)
+        else (d1 + d2) :: Nil
+    }
+
+    diceSeq(dice, 1)
+      .foldLeft((List(pos), ccCards, cCards)) { case ((step, ccs, cs), d) =>
+        if (d < 0) ('JAIL :: step, ccs, cs)
+        else {
+          val prev = step.head
+          val prevIdx = board.indexOf(prev)
+          val next = slide(board, prevIdx)(d)
+
+          next match {
+            case 'G2J => ('JAIL :: next :: step, ccs, cs)
+            case 'CC1|'CC2|'CC3 =>
+              ccs.head match {
+                case 'GO|'JAIL => (ccs.head :: next :: step, slide(ccs, 1), cs)
+                case _ => (next :: step, slide(ccs, 1), cs)
+              }
+            case 'CH1|'CH2|'CH3 =>
+              cs.head match {
+                case 'GO|'JAIL|'C1|'E3|'H2|'R1 => (cs.head :: next :: step, ccs, slide(cs, 1))
+                case 'R|'U =>
+                  slide(board, board.indexOf(next))
+                    .find { p => p.toString.startsWith(cs.head.toString) }
+                    .map { p => (p :: next :: step, ccs, slide(cs, 1)) }
+                    .get
+                case 'BACK3 =>
+                  val jumpIdx = (board.size + board.indexOf(next) - 3) % board.size
+                  (board(jumpIdx) :: next :: step, ccs, slide(cs, 1))
+                case _ => (next :: step, ccs, slide(cs, 1))
+              }
+            case _ => (next :: step, ccs, cs)
+          }
+        }
+      }
+  }
+
+  def countStops(dice: Int, start: Symbol, n: Int, ccCards: List[Symbol], cCards: List[Symbol], counts: Map[Symbol, Int]): Map[Symbol, Int] = n match {
+    case 0 => counts
+    case _ =>
+      val (step, nextCcCards, nextCCards) = rollAndMove(dice, start, ccCards, cCards)
+      val nextCounts = step.foldLeft(counts) { (map, pos) => map + (pos -> (map.getOrElse(pos, 0) + 1)) }
+
+      countStops(dice, step.head, n - 1, nextCcCards, nextCCards, nextCounts)
+  }
+
+  def solve(n: Int): String = {
+    val ccCards = (1 to (rand.nextInt(50) + 50)).foldLeft(communityChestCards) { (ccs, _) => shuffle(ccs, rand.nextInt(ccs.size)) }
+    val cCards = (1 to (rand.nextInt(50) + 50)).foldLeft(chanceCards) { (cs, _) => shuffle(cs, rand.nextInt(cs.size)) }
+
+    val count = 1000000
+    countStops(n, 'GO, count, ccCards, cCards, Map.empty)
+      .toSeq
+      .sortBy { _._2 }
+      .reverse.take(3)
+      .map { case (p, _) => "%02d".format(board.indexOf(p)) }
+      .mkString
+  }
 }
