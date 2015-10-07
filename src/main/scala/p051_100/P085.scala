@@ -18,9 +18,13 @@ package project_euler
 object P085 {
   import commons._
 
-  val phi = from(1).scanLeft(0L) { (z, i) => z + i }
+  val phi = from(2).scanLeft(1L) { (z, i) => z + i }
 
-  def pi(x: Int, y: Int) = phi(x) * phi(y)
+  def findPhiPair(n: Int) =
+    phi
+      .takeWhile { _ <= math.sqrt(n) }
+      .flatMap { phiX => phi.dropWhile { _ < math.sqrt(n) }.takeWhile { _ <= n }.map { phiY => (phiX, phiY) } }
+      .find { case (phiX, phiY) => phiX * phiY == n }
 
   /**
    * 長方形の横の長さをx、縦の長さをyとする。
@@ -66,27 +70,23 @@ object P085 {
    *   π(x, y) = π(1, y) * φ(y)
    *            = φ(x) * φ(y)
    * で求められる。
+   *
+   * いま、π(x, y)がnに最も近い(x, y)を探すので、
+   *   1. φ(x) * φ(y) = n となるφ(x)、φ(y)を探す。
+   *   2. 1で見つかればその(x, y)を解とする。
+   *   3. nの値を
+   *        n + 1, n - 1, n + 2, n - 2, ... , n + d, n - d
+   *      と順に変化させつつ、1～2を繰り返す。
+   * の手順で求められる。
    */
   def solve(n: Int): Long = {
-    Stream
-    .from(1)
-    .takeWhile { y => pi(1, y) <= n }
-    .map { y => (1 to y).map { x => (x * y, (n - pi(x, y)).abs) }.minBy { _._2 } }
-    .minBy { _._2 }
-    ._1
-    // val yMax =
-    //   Stream
-    //     .from(1)
-    //     .find { y => pi(1, y) >= n }
-    //     .get
-    // val yMin =
-    //   Stream.from(1)
-    //     .takeWhile { y => pi(y, y) <= n }
-    //     .last
-    //
-    // (yMin to yMax)
-    //   .flatMap { y => (yMin to y).map { x => (x * y, pi(x, y)) } }
-    //   .minBy { case (_, p) => (n - p).abs }
-    //   ._1
+    val (phiX, phiY) =
+      Stream
+        .from(0)
+        .flatMap { d => Seq(n + d, n - d) }
+        .flatMap { k => findPhiPair(k) }
+        .head
+
+    (phi.indexOf(phiX) + 1) * (phi.indexOf(phiY) + 1)
   }
 }
