@@ -29,5 +29,45 @@ package project_euler
  * 100万個を超える最小のMを求めよ.
  */
 object P086 {
-  def solve(n: Int): Long = ???
+
+  def t(x: Int, y: Int) = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
+
+  def r(h: Int, d: Int, w: Int) = t(h + d, w).min(t(d + w, h)).min(t(w + h, d)) match {
+    case minR if minR.toInt == minR => 1
+    case _ => 0
+  }
+
+  val s: Stream[Int] = 0 #:: 0 #:: Stream.from(2).map { n => s(n - 1) + (1 to n).flatMap { d => (1 to d).map { h => r(h, d, n) } }.sum }
+
+  /**
+   * 立方体の底面の長方形をSABC、上面(底面と平行な面)の長方形をXYFZとし、各辺の長さを下記のように定義する。
+   *   SA = d (奥行)
+   *   SC = w (横)
+   *   SX = h (高さ)
+   * 立方体の向きを変えれば同じ形になるケースがあるので、h &le; d &le; w としてよい。
+   *
+   * 展開図を描いて考える。最短ルートの候補をr1,r2,r3とすれば、
+   *   r1: SからABと交差してFに繋ぐ線分
+   *   r2: SからBCと交差してFに繋ぐ線分
+   *   r3: SからZCと交差してFに繋ぐ線分
+   * となる。
+   * これらはそれぞれ、展開図における下記の長さに等しい。
+   *   r1: SYFCの対角線
+   *   r2: SAFZの対角線
+   *   r3: SXFBの対角線
+   *
+   * r1については、SYFCの対角線なので、辺の長さがそれぞれ (d + h)、w の長方形である。
+   * r2については、SAFZの対角線なので、辺の長さがそれぞれ d、(w + h) の長方形である。
+   * r3については、SXFBの対角線なので、辺の長さがそれぞれ (w + d)、h の長方形である。
+   *
+   * 関数r(h, d, w)を次のように定義する。
+   *   r(h, d, w) = 1   if SからFまでの最短ルートが整数
+   *                0   otherwise
+   * M×M×M以下の寸法の直方体のうち、最短ルートが整数である直方体の個数をS(M)とすると、
+   *   S(1) = 0
+   *   S(M + 1) = S(M)
+   *              + Σ(d = 1 → M + 1, h = 1 → d) r(h, d, M + 1)
+   * の漸化式が成立する。
+   */
+  def solve(n: Int): Long = s.indexWhere { _ > n }
 }
