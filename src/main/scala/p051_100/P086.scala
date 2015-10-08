@@ -30,14 +30,18 @@ package project_euler
  */
 object P086 {
 
-  def t(x: Int, y: Int) = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
-
-  def r(h: Int, d: Int, w: Int) = t(h + d, w).min(t(d + w, h)).min(t(w + h, d)) match {
-    case minR if minR.toInt == minR => 1
-    case _ => 0
-  }
-
-  val s: Stream[Int] = 0 #:: 0 #:: Stream.from(2).map { n => s(n - 1) + (1 to n).flatMap { d => (1 to d).map { h => r(h, d, n) } }.sum }
+  def countMinRoutes(m: Int) =
+    (1 to m)
+      .flatMap { w =>
+        (2 to 2 * m)
+          .withFilter { hd => val z = math.sqrt(math.pow(hd, 2) + math.pow(w, 2)); z.toInt == z }
+          .map { hd =>
+            if (hd <= w) hd / 2
+            else if (hd / 2 < hd - w) 0
+            else hd / 2 - (hd - w) + 1
+          }
+      }
+      .sum
 
   /**
    * 立方体の底面の長方形をSABC、上面(底面と平行な面)の長方形をXYFZとし、各辺の長さを下記のように定義する。
@@ -56,18 +60,22 @@ object P086 {
    *   r2: SAFZの対角線
    *   r3: SXFBの対角線
    *
-   * r1については、SYFCの対角線なので、辺の長さがそれぞれ (d + h)、w の長方形である。
-   * r2については、SAFZの対角線なので、辺の長さがそれぞれ d、(w + h) の長方形である。
-   * r3については、SXFBの対角線なので、辺の長さがそれぞれ (w + d)、h の長方形である。
+   * r1については、SYFCの対角線なので、辺の長さがそれぞれ (h + d)、w の長方形である。
+   *   →対角線の2乗 = (h + d)^2 + w^2 = h^2 + d^2 + w^2 + 2hd
+   * r2については、SAFZの対角線なので、辺の長さがそれぞれ (w + h)、d の長方形である。
+   *   →対角線の2乗 = (w + h)^2 + d^2 = h^2 + d^2 + w^2 + 2hw
+   * r3については、SXFBの対角線なので、辺の長さがそれぞれ (d + w)、h の長方形である。
+   *   →対角線の2乗 = (d + w)^2 + h^2 = h^2 + d^2 + w^2 + 2dw
    *
-   * 関数r(h, d, w)を次のように定義する。
-   *   r(h, d, w) = 1   if SからFまでの最短ルートが整数
-   *                0   otherwise
-   * M×M×M以下の寸法の直方体のうち、最短ルートが整数である直方体の個数をS(M)とすると、
-   *   S(1) = 0
-   *   S(M + 1) = S(M)
-   *              + Σ(d = 1 → M + 1, h = 1 → d) r(h, d, M + 1)
-   * の漸化式が成立する。
+   * h &le; d &le; w であるから、2hd &le; 2d^2 &le; 2hw。
+   * d &le; w 2d^2 &le; 2dw より、2hd &le; 2d^2 &le; 2dw &le; 2hw。
+   * よって、最短ルートはr1である。
+   *
+   * x = h + d, y = w とすると、y &le; M の範囲で √(x^2 + y^2) が整数となる(x, y)の組を探し、
+   * その後xをhとdの和に分割すればよい。
+   *
+   * ※ピタゴラス数でいけるかと思ったが、ピタゴラス数を小さい方から並べる方法が分からなかった
    */
-  def solve(n: Int): Long = s.indexWhere { _ > n }
+  def solve(n: Int): Long =
+    Stream.from(0).map { m => countMinRoutes(m) }.indexWhere { _ > n }
 }
