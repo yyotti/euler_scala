@@ -43,6 +43,16 @@ object P086 {
       }
       .sum
 
+  def binarySearch(target: Int, s: Int, e: Int): Int =
+    if (s == e) s
+    else {
+      val c = (s + e) / 2
+      if (countMinRoutes(c) > target)
+        if (countMinRoutes(c - 1) <= target) c
+        else binarySearch(target, s, c - 1)
+      else binarySearch(target, c + 1, e)
+    }
+
   /**
    * 立方体の底面の長方形をSABC、上面(底面と平行な面)の長方形をXYFZとし、各辺の長さを下記のように定義する。
    *   SA = d (奥行)
@@ -74,8 +84,12 @@ object P086 {
    * x = h + d, y = w とすると、y &le; M の範囲で √(x^2 + y^2) が整数となる(x, y)の組を探し、
    * その後xをhとdの和に分割すればよい。
    *
-   * ※ピタゴラス数でいけるかと思ったが、ピタゴラス数を小さい方から並べる方法が分からなかった
+   * ※ピタゴラス数でいけるかと思ったが、ピタゴラス数を小さい方から並べる方法が分からなかった。
+   * ※ヒントを探した。まずM=1から順に倍々にしていき、最初にnを超えたMとM/2の間で二分探索するといいらしい。
    */
-  def solve(n: Int): Long =
-    Stream.from(0).map { m => countMinRoutes(m) }.indexWhere { _ > n }
+  def solve(n: Int): Long = {
+    val p = Stream.from(1).find { i => countMinRoutes(math.pow(2, i - 1).toInt) > n }.get
+    val e = math.pow(2, p - 1).toInt
+    binarySearch(n, e / 2, e)
+  }
 }
