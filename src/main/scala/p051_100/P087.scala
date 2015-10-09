@@ -23,5 +23,24 @@ package project_euler
  * では, 50,000,000未満の数で, 素数の2乗と素数の3乗と素数の4乗の和で表される数は何個あるか?
  */
 object P087 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  val primes2 = primes.map { p => p * p }
+  val primes3 = primes.map { p => p * p * p }
+  val primes4 = primes.map { p => p * p * p * p }
+
+  def solve(n: Int): Long =
+    primes4
+      .takeWhile { _ < n - primes2.head - primes3.head }
+      .flatMap { p4 =>
+        primes3
+          .takeWhile { _ < n - p4 - primes2.head }
+          .flatMap { p3 =>
+            primes2
+              .takeWhile { _ < n - p4 - p3 }
+              .map { p2 => p2 + p3 + p4 }
+          }
+      }
+      .toSet
+      .size
 }
