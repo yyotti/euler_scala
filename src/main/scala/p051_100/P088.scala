@@ -42,5 +42,54 @@ package project_euler
  * 2 ≤ k ≤ 12000 に対する全ての最小積和数の和は何か?
  */
 object P088 {
-  def solve(n: Int): Long = ???
+  import commons._
+
+  def multiplyOne(x: Int, ls: List[Int]): List[List[Int]] = ls match {
+    case Nil => Nil
+    case h :: ts => ((x * h) :: ts) :: multiplyOne(x, ts).map { zs => (h :: zs) }
+  }
+
+  def addFactor(n: Int, products: List[Int]): List[List[Int]] = (n :: products).sorted :: multiplyOne(n, products).map { _.sorted }
+
+  def productLists(fs: List[Int]): List[List[Int]] = fs match {
+    case Nil => List(Nil)
+    case x :: xs => productLists(xs).flatMap { ls => addFactor(x, ls) }.distinct
+  }
+
+  def findK(n: Int) = productLists(primeFactors(n).map { _.toInt }).map { ls => n - ls.sum + ls.size }.sorted
+
+  /**
+   * 積和数を作るには2以上の因数を2つ以上もつ自然数が必要である。
+   * よって、最小の積和数は 2 * 2 = 4 であり、これがk = 2の場合の最小積和数になる。
+   *
+   * 2以上の因数を2つ以上もたなければならないので、素数は積和数になりえない。
+   * そこで、4以上の合成数を対象に素因数分解する。
+   *
+   * n = 4の場合、
+   *   4 = 2 * 2 = 2 + 2  (k = 2)
+   *
+   * n = 6の場合、
+   *   6 = 2 * 3 != 2 + 3 = 5
+   * であるが、和と積が等しくなるように1を加えていくと
+   *   6 = 2 * 3 * 1 = 2 + 3 + 1 = 6  (k = 3)
+   *
+   * n = 8 の場合、
+   *   8 = 2 * 2 * 2 * 1 * 1 = 2 + 2 + 2 + 1 + 1 = 8  (k = 5)
+   * であるが、他にも
+   *   8 = 2 * 4 * 1 * 1 = 2 + 4 + 1 + 1 = 8  (k = 4)
+   * がある。
+   *
+   * 以上のことから、合成数nを素因数分解し、全ての約数の組み合わせを列挙したうえで、
+   * 生成できるkを全て列挙する。同じkが見付かる場合があるが、その場合はより小さいnを
+   * 採用する。
+   */
+  def solve(n: Int): Long =
+    from(1)
+      .flatMap { i => findK(i.toInt).map { k => (i.toInt, k) } }
+      .filter { case (_, k) => k <= n }
+      .scanLeft(Map[Int, Int]()) { case (mins, (i, k)) => mins + (k -> i.min(mins.getOrElse(k, i))) }
+      .find { _.size >= n }
+      .map { m => (m - 1).map { _._2 }.toSet.sum }
+      .get
+
 }
