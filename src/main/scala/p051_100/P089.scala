@@ -126,5 +126,30 @@ package project_euler
  * 4. CはDまたはMの前に来ることが許される
  */
 object P089 {
-  def solve: Long = ???
+  import commons._
+
+  val replaces = List(
+    ("DCCCC", "CM"),
+    ("CCCC", "CD"),
+    ("LXXXX", "XC"),
+    ("XXXX", "XL"),
+    ("VIIII", "IX"),
+    ("IIII", "IV")
+  )
+
+  def savedLength(s: String) =
+    s.length - replaces.foldLeft(s) { case (z, (r, t)) => z.replaceAll(r, t) }.length
+
+  /**
+   * 短くなる文字数が分かればよいので、最短表記がされていない部分を最短表記に置き換えて長さの差を取ればよい。
+   * ただし、例えば"DCCCC"という文字列は"CM"と等価であるが、見方次第では"D CCCC" → "DCD" となってしまうので、
+   * 置換の順番に注意しなければならない。
+   *
+   * また、最短表記ではないがルールに従って書かれているようなので、"IIIII" → "V" などの変換は行わなくてよい。
+   */
+  def solve: Long =
+    withSource(io.Source.fromFile(new java.io.File("src/main/resources/p089_roman.txt"))) { src =>
+      src.getLines.map { savedLength }.sum
+    }
+
 }
