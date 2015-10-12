@@ -52,5 +52,59 @@ package project_euler
  * すべての平方数を表示し得る2つの立方体の異なる配列の組はいくつあるか.
  */
 object P090 {
-  def solve: Long = ???
+
+  val squares = List(
+    (0, 1),
+    (0, 4),
+    (0, 9),
+    (1, 6),
+    (2, 5),
+    (3, 6),
+    (4, 9),
+    (6, 4),
+    (8, 1)
+  )
+
+  def createDices(nums: List[Int], c: Int) = nums.combinations(c)
+
+  def checkSquares(dice1: Set[Int], dice2: Set[Int]) = {
+    def add69(dice: Set[Int]) =
+      if (dice.contains(6)) dice + 9
+      else if (dice.contains(9)) dice + 6
+      else dice
+
+    val d1 = add69(dice1)
+    val d2 = add69(dice2)
+    squares.forall { case (n1, n2) =>
+      d1.contains(n1) && d2.contains(n2) || d1.contains(n2) && d2.contains(n1)
+    }
+  }
+
+  /**
+   * 立方体に数字を配置するにあたり、以下の制約があることが分かる。
+   *    i)0は1桁の平方数の10の位にしか使われないため、0と{1, 4, 9}は別々の立方体に含まれなければならない。
+   *   ii)2と5は25にしか使われないので、2と5は別々の立方体に含まれなければならない。
+   *  iii)3は36にしか使われないので、6とは反対側の立方体に3を含めなければならない。
+   *   iv)8は81にしか使われないので、1とは反対側の立方体に8を含めなければならない。
+   * これらの制約から確定できるのは
+   *   立方体1：{0, 2}
+   *   立方体2：{1, 4, 5, 9}
+   * もしくは
+   *   立方体1：{0, 5}
+   *   立方体2：{1, 4, 2, 9}
+   * である。
+   *
+   * あとは総当たりで解く。
+   *
+   * と思ったが、やってみると答えが違う。しょうがないので完全総当たりでやる。
+   * 完全総当たりでも、
+   *   1つの立方体に対する配列数：10C6 = 210通り
+   *   →210個の立方体から2つを選ぶ：210C2 = 21945通り
+   * なので、比較的短時間で解けるはず。
+   */
+  def solve: Long =
+    createDices(List.range(0, 10), 6)
+      .toSeq
+      .combinations(2)
+      .count { ls => checkSquares(ls(0).toSet, ls(1).toSet) }
 }
