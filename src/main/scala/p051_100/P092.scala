@@ -28,5 +28,13 @@ package project_euler
  * では, 10,000,000より小さい数で89に到達する数はいくつあるか.
  */
 object P092 {
-  def solve(n: Int): Long = ???
+  def sumSquareDigits(n: Int): Int =
+    if (n == 0) 0
+    else (n % 10) * (n % 10) + sumSquareDigits(n / 10)
+
+  def findEnd(n: Int): Int =
+    if (n == 1 || n == 89) n
+    else findEnd(sumSquareDigits(n))
+
+  def solve(n: Int): Long = (1 until n).count { i => findEnd(i) == 89 }
 }
