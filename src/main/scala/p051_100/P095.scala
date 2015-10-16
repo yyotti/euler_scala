@@ -32,5 +32,48 @@ package project_euler
  * いずれの要素も 1,000,000 を超えない最長の友愛鎖の最小のメンバーを求めよ.
  */
 object P095 {
-  def solve: Long = ???
+  import commons._
+
+  def sums(limit: Int) =
+    (1 until limit)
+      .foldLeft(Map[Int, Int]()) { (map, i) =>
+        (2 * i until limit by i)
+          .foldLeft(map + (i -> map.getOrElse(i, 0))) { (map, k) => map + (k -> (map.getOrElse(k, 0) + i)) }
+      }
+      .filter { case (_, s) => s < limit }
+
+  def chainCount(start: Int, nums: Map[Int, Int]): Int =  {
+    def loop(n: Int, result: List[Int]): List[Int] = n match {
+      case k if result.contains(k) => k :: result
+      case k if !nums.contains(k) => Nil
+      case k => loop(nums(k), k :: result)
+    }
+
+    loop(start, Nil) match {
+      case Nil => 0
+      case x :: _ if x != start => 0
+      case ls => ls.size - 1
+    }
+  }
+
+  /**
+   * まずエラトステネスの篩のイメージで真の約数の和の一覧を作る。
+   * エラトステネスの篩は、ある数字の倍数を順に削除していくアルゴリズムだが、今回は
+   *   YがXの倍数である → XはYの約数である
+   * ということで篩にかける。
+   *
+   * 一覧ができたら、あとは和を辿っていってループになっているか調べればよい。
+   */
+  def solve: Long = {
+    val limit = 1000000
+    val nums = sums(limit)
+    (1 until limit)
+      .foldLeft((0, 0)) { case ((minN, maxCount), n) =>
+        val c = chainCount(n, nums)
+        if (c > maxCount) (n, c)
+        else if (c == maxCount) (minN.min(n), c)
+        else (minN, maxCount)
+      }
+      ._1
+  }
 }
