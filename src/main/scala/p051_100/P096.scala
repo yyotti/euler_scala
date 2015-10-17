@@ -59,5 +59,103 @@ package project_euler
  * 50すべてのパズルを解き, それぞれの解答の左上隅にある3桁の数の合計を求めよ; 例えば483は上の解答例の左上隅の3桁の数である.
  */
 object P096 {
-  def solve: Long = ???
+  import commons._
+
+  val B_SIZE = 3
+  val SIZE = B_SIZE * B_SIZE
+
+  type Field = Array[Either[Set[Int], Int]]
+
+  def rowIndices(index: Int) = {
+    val start = (index / SIZE) * SIZE
+    (start until (start + SIZE))
+  }
+
+  def colIndices(index: Int) = {
+    val start = index % SIZE
+    (start until (start + SIZE * SIZE) by SIZE)
+  }
+
+  def blockIndices(index: Int) = {
+    val (startI, startJ) = ((index / SIZE) / B_SIZE, (index % SIZE) / B_SIZE)
+    (0 until B_SIZE)
+      .flatMap { i => (0 until B_SIZE).map { j => (startI * B_SIZE + i) * SIZE + (startJ * B_SIZE + j) } }
+  }
+
+  def decide(field: Field, index: Int, n: Int) = {
+    def decideRows(field: Field) =
+      rowIndices(index).foldLeft(field) { (f, i) =>
+        f(i) match {
+          case Left(set) => f.updated(i, Left(set - n))
+          case _ => f
+        }
+      }
+    def decideCols(field: Field) =
+      colIndices(index).foldLeft(field) { (f, i) =>
+        f(i) match {
+          case Left(set) => f.updated(i, Left(set - n))
+          case _ => f
+        }
+      }
+    def decideBlocks(field: Field) =
+      blockIndices(index).foldLeft(field) { (f, i) =>
+        f(i) match {
+          case Left(set) => f.updated(i, Left(set - n))
+          case _ => f
+        }
+      }
+
+    field(index) match {
+      case Right(num) => field
+      case Left(set) if !set.contains(n) => field
+      case _ => decideRows(decideCols(decideBlocks(field))).updated(index, Right(n))
+    }
+  }
+
+  def findDecidable(field: Field): Option[Int] = {
+    val index = field.indexWhere {
+      case Left(set) if set.size == 1 => true
+      case _ => false
+    }
+
+    if (index >= 0) Some(index)
+    else None
+  }
+
+  def isCompleted(field: Field) = field.forall { _.isRight }
+
+  def findAnswers(field: Field): Set[Field] =
+    if (isCompleted(field)) Set(field)
+    else findDecidable(field) match {
+      case Some(index) => findAnswers(decide(field, index, field(index).left.get.head))
+      case _ =>
+        field.indexWhere {
+          case Left(set) if set.size > 1 => true
+          case _ => false
+        } match {
+          case -1 => Set.empty // 解なし
+          case i => field(i).left.get.flatMap { n => findAnswers(decide(field, i, n)) }
+        }
+    }
+
+  def initField(lines: Seq[String]) =
+    lines
+      .mkString
+      .zipWithIndex
+      .foldLeft(Array.fill[Either[Set[Int], Int]](SIZE * SIZE) { Left((1 to SIZE).toSet) }) { case (f, (c, i)) => if (c == '0') f else decide(f, i, c.asDigit) }
+
+  def solveNPs(problems: Seq[Seq[String]]) =
+    problems
+      .map { p => findAnswers(initField(p)) }
+      .withFilter { answers => answers.size == 1 }
+      .map { _.head.map { _.right.get } }
+
+  def solve: Long = {
+    val problems =
+      withSource(io.Source.fromFile(new java.io.File("src/main/resources/p096_sudoku.txt"))) { src =>
+        src.getLines.toList.grouped(SIZE + 1).map { _.tail }.toSeq
+      }
+
+    solveNPs(problems).map { _.take(3).mkString.toInt }.sum
+  }
 }
