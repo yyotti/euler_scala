@@ -21,5 +21,24 @@ package project_euler
  * 注: ファイル中の最初の二行は上の例である.
  */
 object P099 {
-  def solve: Long = ???
+  import commons._
+
+  /**
+   * 底が10の対数をとって比較する。
+   *   log(a^m) = m*log(a)
+   * であるから、aの対数をとってからmをかければよい。
+   */
+  def solve: Long =
+    withSource(io.Source.fromFile(new java.io.File("src/main/resources/p099_base_exp.txt"))) { src =>
+      src
+        .getLines
+        .zipWithIndex
+        .foldLeft((0.0, 0)) { case ((m, lineNo), (line, idx)) =>
+          val (base :: exp :: _) = line.split(",").map { _.toInt }.toList
+          val value = math.log10(base) * exp
+          if (m < value) (value, idx)
+          else (m, lineNo)
+        }
+        ._2 + 1
+    }
 }
