@@ -27,5 +27,43 @@ package project_euler
  * 注: 作られるアナグラムは, すべて与えられたテキストファイルに含まれている.
  */
 object P098 {
-  def solve: Long = ???
+  import commons._
+
+  val squares = Stream.from(1).map { n => digits(n * n) }
+
+  def findMaxSquareNums(words: List[String]): List[Int] = words match {
+    case Nil => Nil
+    case x :: Nil => Nil
+    case x :: y :: _ =>
+      val nums = squares.dropWhile { _.length < x.length }.takeWhile { _.length == x.length }
+      nums
+        .map { ns => x.zip(ns).toMap }
+        .filter { map => map.values.toList.distinct.size == map.size }
+        .map { map => (x.map { c => map(c) }, y.map { c => map(c) }) }
+        .withFilter { case (n1, n2) => nums.contains(n2) }
+        .map { case (n1, n2) => n1.mkString.toInt.max(n2.mkString.toInt) }
+        .toList
+        .distinct
+  }
+
+  /**
+   * まずテキスト中の全ての単語を読み込み、アナグラムになっているものをまとめる。
+   * それぞれの組について、下記の操作で平方アナグラム単語対を検索する。
+   *   1. 組の中から2つの単語を選択する。
+   *   2. 選択した単語の一方に、単語の長さと同じ桁数をもつ平方数を1つ割り当てる。
+   *   3. 平方数の桁を単語の1文字に対応させ割り振る。
+   *   4. もう一方の単語を数字に変換する。
+   *   5. 4で変換した数字も平方数であれば、大きいほうの数を記録する。
+   * この操作で得られた平方数のうち、最も大きい数字を結果とする。
+   */
+  def solve: Long =
+    fromFileToString(new java.io.File("src/main/resources/p098_words.txt"))
+      .split(",")
+      .map { _.tail.init }
+      .toList
+      .groupBy { _.sorted }
+      .withFilter { _._2.size > 1 }
+      .flatMap { case (_, ls) => ls.combinations(2).toList.flatMap { ws => findMaxSquareNums(ws.toList) } }
+      .max
+
 }
