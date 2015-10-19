@@ -122,6 +122,13 @@ object P096 {
     else None
   }
 
+  def findMinNumsIndex(field: Field): Int =
+    field
+      .zipWithIndex
+      .filter { _._1.isLeft }
+      .minBy { case (p, _) => p.left.get.size }
+      ._2
+
   def isCompleted(field: Field) = field.forall { _.isRight }
 
   def findAnswers(field: Field): Set[Field] =
@@ -129,12 +136,11 @@ object P096 {
     else findDecidable(field) match {
       case Some(index) => findAnswers(decide(field, index, field(index).left.get.head))
       case _ =>
-        field.indexWhere {
-          case Left(set) if set.size > 1 => true
-          case _ => false
-        } match {
-          case -1 => Set.empty // 解なし
-          case i => field(i).left.get.flatMap { n => findAnswers(decide(field, i, n)) }
+        val minNumsIndex= findMinNumsIndex(field)
+        field(minNumsIndex) match {
+          case Left(set) if set.isEmpty => Set.empty // 解なし
+          case Left(set) => set.flatMap { n => findAnswers(decide(field, minNumsIndex, n)) }
+          case _ => Set.empty // ここには入らないけど
         }
     }
 
