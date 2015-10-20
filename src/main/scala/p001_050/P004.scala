@@ -16,7 +16,7 @@ object P004 {
 
   def nDigitNumbers(digit: Int): List[Long] =
     if (digit <= 0) Nil
-    else List.range(BigInt(10).pow(digit - 1).toLong, BigInt(10).pow(digit).toLong)
+    else List.range(math.pow(10, digit - 1).toLong, math.pow(10, digit).toLong)
 
   def solve(n: Int): Long = {
     val nums = nDigitNumbers(n)
