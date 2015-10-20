@@ -12,8 +12,22 @@ package project_euler
  * 200万以下の全ての素数の和を求めよ.
  */
 object P010 {
-  import commons._
+  def sieve(nums: List[Int]): List[Int] = {
+    def loop(ls: List[Int], max: Int, result: List[Int]): List[Int] = ls match {
+      case Nil => result
+      case x :: _ if x > max => result.reverse ::: ls
+      case x :: xs => loop(xs.filter { _ % x != 0 }, max, x :: result)
+    }
 
-  def solve(max: Long): Long =
-    primes.takeWhile { _ <= max }.sum
+    nums match {
+      case Nil => Nil
+      case _ => loop(nums, math.sqrt(nums.last).toInt, Nil)
+    }
+  }
+
+  /**
+   * 素数の上限が明確なので、列挙するよりエラトステネスの篩にかける方が速い。
+   */
+  def solve(max: Int): Long =
+    (2 :: sieve(List.range(3, max + 1, 2))).map { _.toLong }.sum
 }
