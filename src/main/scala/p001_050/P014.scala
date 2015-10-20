@@ -45,6 +45,8 @@ object P014 {
 
   val cache = collection.mutable.Map[Long, Int]()
 
-  def solve(n: Int): Long =
+  def solve(n: Int): Long = {
+    cache.clear
     (1 to n).map { k => (k, collatsCount(k)) }.maxBy { _._2 }._1
+  }
 }
