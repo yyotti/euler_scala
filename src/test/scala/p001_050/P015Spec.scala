@@ -5,8 +5,8 @@ import org.specs2.mutable._
 
 class P015Spec extends Specification {
   "P015#combination(Int, Int)" should {
-    "returns 0 if (n, r) = (3, 0)" in {
-      P015.combination(3, 0) must beEqualTo(0)
+    "returns 1 if (n, r) = (3, 0)" in {
+      P015.combination(3, 0) must beEqualTo(1)
     }
 
     "returns 0 if (n, r) = (4, 5)" in {
