@@ -4,17 +4,9 @@ import project_euler.P009
 import org.specs2.mutable._
 
 class P009Spec extends Specification {
-  "P009#isPytagoreanTriplet(Long, Long, Long)" should {
-    "returns false if (a, b, c) = (1, 1, 1)" in {
-      P009.isPytagoreanTriplet(1, 1, 1) must beFalse
-    }
-
-    "returns true if (a, b, c) = (3, 4, 5)" in {
-      P009.isPytagoreanTriplet(3, 4, 5) must beTrue
-    }
-
-    "returns true if (a, b, c) = (6, 8, 10)" in {
-      P009.isPytagoreanTriplet(6, 8, 10) must beTrue
+  "P009#primitivePythagoreanTriprets" should {
+    "first 10 terms are [(3, 4, 5), (5, 12, 13), (15, 8, 17), (7, 24, 25), (21, 20, 29), (9, 40, 41), (35, 12, 37), (11, 60, 61), (45, 28, 53), (33, 56, 65)]" in {
+      P009.primitivePythagoreanTriprets.take(10).toList must beEqualTo(List((3, 4, 5), (5, 12, 13), (15, 8, 17), (7, 24, 25), (21, 20, 29), (9, 40, 41), (35, 12, 37), (11, 60, 61), (45, 28, 53), (33, 56, 65)))
     }
   }
 

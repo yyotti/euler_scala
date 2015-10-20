@@ -20,16 +20,24 @@ package project_euler
  * これらの積 abc を計算しなさい.
  */
 object P009 {
-  def isPytagoreanTriplet(a: Long, b: Long, c: Long) = a * a + b * b == c * c
+  import commons._
 
+  val primitivePythagoreanTriprets =
+    Stream
+      .from(2)
+      .flatMap { m => (1 until m).withFilter { n => gcd(m, n) == 1 && (m - n) % 2 == 1 }.map { n => (m * m - n * n, 2 * m * n, m * m + n * n) }  }
+
+  /**
+   * a &lt; b &lt; c であるが、もし a &ge; b であっても、aとbを入れ替えればよい。
+   * よって、原始ピタゴラス数を(a0, b0, c0)とすると、
+   *   k(a0 + b0 + c0) = 1000
+   * を満たす(a0, b0, c0)およびkを探し、
+   *   k*a0 * k*b0 * k*c0
+   * の値を計算すればよい。
+   */
   def solve: Long =
-    (1L to (1000 / 3)).flatMap { a =>
-      ((a + 1) to (1000 - a - 1) / 2).map { b =>
-        (a, b, 1000 - a - b)
-      }
-    }.withFilter {
-      case (a, b, c) => isPytagoreanTriplet(a, b, c)
-    }.map {
-      case (a, b, c) => a * b * c
-    }.headOption.getOrElse(0)
+    primitivePythagoreanTriprets
+      .find { case (a, b, c) => 1000 % (a + b + c) == 0 }
+      .map { case (a, b, c) => a * b * c * math.pow(1000 / (a + b + c), 3).toLong }
+      .get
 }
