@@ -23,5 +23,18 @@ package project_euler
  * F(k)が, 頭から9桁と下9桁のどちらも1から9までの数字をすべて含む初めてのフィボナッチ数とするとき, kを求めよ.
  */
 object P104 {
-  def solve: Long = ???
+  def isPandigital(n: String) = n.sorted == "123456789"
+
+  /**
+   * 無限数列を作ってもいいが、1つの項しかいらないのでループでやる。
+   */
+  def solve: Long = {
+    def loop(a: BigInt, b: BigInt, n: Int): Int = {
+      val c = a + b
+      if (isPandigital((c % 1000000000L).toString) && isPandigital(c.toString.take(9))) n
+      else loop(b, c, n + 1)
+    }
+
+    loop(1, 1, 3)
+  }
 }
