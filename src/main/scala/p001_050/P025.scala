@@ -48,10 +48,29 @@ package project_euler
  * 1000桁になる最初の項の番号を答えよ.
  */
 object P025 {
-  import commons._
+  val logPhi = math.log10((1 + math.sqrt(5)) / 2)
+  val e = math.log10(5) / 2
 
-  val fib: Stream[BigInt] = BigInt(1) #:: BigInt(1) #:: fib.zip(fib.tail).map { case (a, b) => a + b }
-
+  /**
+   * フィボナッチ数列の一般項F(n)は、
+   *   φ = (1 + √5) / 2
+   * として
+   *   F(n) = (φ^n - (-φ)^(-n)) / √5
+   * で表せる。この式の第2項はn = 0のときの 1/√5 ≒ 0.447 が最大で、それを超えることはない。
+   * よって、第2項を省略した
+   *   F(n) ≒ (φ^n)/√5
+   * は、F(n)の値を 0.447 以下の誤差で与える近似式である。
+   * この誤差は0.5より小さいので、F(n)の正確な整数値は
+   *   F(n) = ((φ^n)/√5 + 1/2)   (小数点以下は切り捨て)
+   * で得られる。
+   *
+   * いま、フィボナッチ数列の桁数のみが知れればよいので、F(n)の10を底とする対数をとると、
+   *   log10(F(n)) = log10((φ^n)/√5 + 1/2)
+   *               ≒ log10((φ^n)/√5)
+   *               = log10(φ^n) - log10(√5)
+   *               = n*log10(φ) - log10(5)/2
+   * 桁数はこれに1を加えた値の整数部分である。
+   */
   def solve(digit: Int): Long =
-    fib.zipWithIndex.dropWhile { case (n, idx) => digitCount(n) < digit }.head._2 + 1
+    Stream.from(1).find { n => n * logPhi - e + 1 >= digit }.get
 }
