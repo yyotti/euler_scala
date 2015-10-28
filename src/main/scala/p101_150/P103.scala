@@ -53,5 +53,8 @@ package project_euler
  * 注意: この問題は Problem 105 と 106 に関連している.
  */
 object P103 {
+  /**
+   * TODO 難しい。後回し。
+   */
   def solve(n: Int): Long = ???
 }
