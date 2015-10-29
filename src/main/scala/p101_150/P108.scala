@@ -32,5 +32,40 @@ package project_euler
  * 注: この問題は Problem 110 の易しいケースである. こちらを先に解く事を強く勧める.
  */
 object P108 {
-  def solve(n: Int): Long = ???
+
+  def countAnswers(n: Int): Int =
+    ((n + 1).toLong to 2 * n)
+      .withFilter { x => (x * n) % (x - n) == 0 }
+      .map { x => (x, (x * n) / (x - n)) }
+      .count { case (x, y) => (x * y) % (x + y) == 0 }
+
+  /**
+   * 対称性から x &le; y としてよい。
+   * x = y の場合、
+   *   1/x + 1/x = 2/x = 1/n
+   * であるから
+   *   x = 2n
+   * で、これがxのとりうる最大値である。
+   *
+   * x &lt; y の場合、
+   *   1/x + 1/y = (x + y)/xy = 1/n
+   *   xy/(x + y) = n
+   * であるから、xyは(x + y)で割り切れなければならない。
+   *
+   * また、yについて解くと
+   *   xy = (x + y)n
+   *   (x - n)y = xn
+   *   y = xn/(x - n)
+   * より、x &gt; n でなければならない。
+   *
+   * 以上のことから、n &lt; x &le; 2n かつ xy % (x + y) = 0 となる
+   * (x, y)の組の数を数えればよい。
+   */
+  def solve(n: Int): Long = {
+    def loop(k: Int): Int =
+      if (countAnswers(k) > n) k
+      else loop(k + 1)
+
+    loop(1)
+  }
 }
