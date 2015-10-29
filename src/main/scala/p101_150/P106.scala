@@ -36,5 +36,41 @@ package project_euler
  * 注意: この問題は Problem 103 と 105 に関連している.
  */
 object P106 {
-  def solve(n: Int): Long = ???
+  def countValidateRequires(nums: List[Int]): Long =
+    (1 to nums.size / 2)
+      .flatMap { r =>
+        nums.combinations(r)
+          .flatMap { n =>
+            (r to nums.size - n.size).flatMap { k =>
+              nums.diff(n).combinations(k).map { ls => (n, ls) }
+            }
+          }
+      }
+      .count { case (ls1, ls2) =>
+        ls1.size == ls2.size && ls1.zip(ls2).map { case (a, b) => if (a < b) -1 else 1 }.sum.abs != ls1.size
+      }
+
+  /**
+   * 条件iiを満たしているわけなので、BとCの要素数が異なる場合は考えなくてよい。
+   * よってBとCの要素数が等しい場合についてのみ考える。
+   *
+   * 要素数をkとする。
+   * k = 1の場合は要素同士を比較すればよいが、もともと各要素は異なっているので考えなくてよい。
+   * よって k &ge; 2 の場合を考える。
+   *
+   * 集合内の要素を昇順にソートし、先頭から順に a1, a2, ..., an とする。
+   * 大きさkの部分集合どうしを比較する。
+   * 一方の集合に含まれる全ての要素がもう一方の集合の要素の最小値より小さい場合は、和が等しく
+   * なる可能性はない。
+   * また、部分集合の一方を {b1, b2, ..., bk} 、もう一方を {c1, c2, ..., ck} としたとき、
+   *   ci &ge; bi   (1 &le; i &le; k)
+   * が常に成立するなら、我が等しくなることはない。
+   *
+   * よって、上記が成立しない場合をチェックすればよい。
+   *
+   * 今回は、チェックが必要なパターンの数を求めればよいので、具体的な集合でなくとも
+   *   {1, 2, 3, ..., n}
+   * で考えても同じ結果が得られる。
+   */
+  def solve(n: Int): Long = countValidateRequires((1 to n).toList) / 2
 }
