@@ -42,7 +42,7 @@ object P105 {
       .flatMap { r =>
         nums.combinations(r)
           .flatMap { n =>
-            (1 to nums.size - n.size).flatMap { k =>
+            (r to nums.size - n.size).flatMap { k =>
               nums.diff(n).combinations(k).map { ls => (n, ls) }
             }
           }
