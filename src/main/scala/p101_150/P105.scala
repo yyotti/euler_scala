@@ -35,5 +35,34 @@ package project_euler
  * 注意: この問題は Problem 103 と 106 に関連している.
  */
 object P105 {
-  def solve: Long = ???
+  import commons._
+
+  def validate(nums: List[Int]): Boolean =
+    (1 to nums.size / 2)
+      .flatMap { r =>
+        nums.combinations(r)
+          .flatMap { n =>
+            (1 to nums.size - n.size).flatMap { k =>
+              nums.diff(n).combinations(k).map { ls => (n, ls) }
+            }
+          }
+      }
+      .forall { case (ls1, ls2) =>
+        val sA = ls1.sum
+        val sB = ls2.sum
+        sA != sB && (ls1.size >= ls2.size || sA < sB)
+      }
+
+  /**
+   * 全ての部分集合のペアを作って全チェック
+   */
+  def solve: Long =
+    withSource(io.Source.fromFile(new java.io.File("src/main/resources/p105_sets.txt"))) { src =>
+      src
+        .getLines
+        .map { _.split(",").map { _.toInt }.toList.sorted }
+        .withFilter { nums => validate(nums) }
+        .map { _.sum }
+        .sum
+    }
 }
