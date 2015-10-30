@@ -32,12 +32,10 @@ package project_euler
  * 注: この問題は Problem 110 の易しいケースである. こちらを先に解く事を強く勧める.
  */
 object P108 {
+  import commons._
 
   def countAnswers(n: Int): Int =
-    ((n + 1).toLong to 2 * n)
-      .withFilter { x => (x * n) % (x - n) == 0 }
-      .map { x => (x, (x * n) / (x - n)) }
-      .count { case (x, y) => (x * y) % (x + y) == 0 }
+    primeFactorsCount(n.toLong * n).map { case (_, e) => e + 1 }.product / 2 + 1
 
   /**
    * 対称性から x &le; y としてよい。
@@ -46,20 +44,27 @@ object P108 {
    * であるから
    *   x = 2n
    * で、これがxのとりうる最大値である。
+   * x &le; nの場合、1/x &gt; 1/n となるので、 x &gt; n でなければならない。
+   * よってxの範囲は
+   *   n &lt; x &le; 2n
+   * である。
+   * 同じことがyにも言えるので、
+   *   n &lt; x &le; y &le; 2n
+   * となる。
    *
-   * x &lt; y の場合、
-   *   1/x + 1/y = (x + y)/xy = 1/n
-   *   xy/(x + y) = n
-   * であるから、xyは(x + y)で割り切れなければならない。
-   *
-   * また、yについて解くと
-   *   xy = (x + y)n
-   *   (x - n)y = xn
-   *   y = xn/(x - n)
-   * より、x &gt; n でなければならない。
-   *
-   * 以上のことから、n &lt; x &le; 2n かつ xy % (x + y) = 0 となる
-   * (x, y)の組の数を数えればよい。
+   * x,y &gt; n であることから、s,tを自然数として
+   *   x = n + s, y = n + t
+   * と書ける。このとき
+   *   1/x + 1/y = 1/n
+   *   1/(n + s) + 1/(n + t) = 1/n
+   *   (n + s + n + t)/((n + s)(n + t)) = 1/n
+   *   n(2n + s + t) = (n + s)(n + t)
+   *   2n^2 + (s + t)n = n^2 + (s + t)n + st
+   *   n^2 = st
+   * であるから、これを満たす(s, t)の組の数をカウントすればよい。
+   * これは、n^2 の約数の個数に他ならない。
+   * ただし、x &le; y であるから s &le; t なので、s &le; √(n^2) = n まで
+   * をカウントする。
    */
   def solve(n: Int): Long = {
     def loop(k: Int): Int =
